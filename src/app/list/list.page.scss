@@ -1,0 +1,21 @@
+ion-col {
+  text-align: center;
+}
+
+.game-name {
+  text-align: left;
+}
+
+.header-list {
+  font-weight: bold;
+}
+
+ion-thumbnail {
+  --size: 40px;
+  --border-radius: 20px;
+}
+
+ion-popover {
+  --backdrop-opacity: 0;
+  font-size: small;
+}
