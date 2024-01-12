@@ -10,34 +10,62 @@
       <ion-title size="large">List</ion-title>
     </ion-toolbar>
   </ion-header>
-  <ion-button (click)="printToConsole()">Print to Console</ion-button>
+  <ion-input
+    type="text"
+    placeholder="Enter Username"
+    [(ngModel)]="userName"
+  ></ion-input>
+  <ion-button (click)="loadGameList(userName)">Load Game List</ion-button>
   <ion-list>
     <ion-list-header> </ion-list-header>
     <ion-item>
       <ion-grid>
         <ion-row>
           <ion-col size="1" class="header-list"></ion-col>
-          <ion-col class="header-list" size="5">Name</ion-col>
+          <ion-col class="header-list" size="5" (click)="sort('name')"
+            >Name</ion-col
+          >
           <ion-col size="1" class="header-list" id="min-player-icon"
-            ><ion-icon title="Minimal Player" name="person-outline"></ion-icon
+            ><ion-icon
+              (click)="sort('minplayers')"
+              title="Minimal Player"
+              name="person-outline"
+            ></ion-icon
           ></ion-col>
-
           <ion-col size="1" class="header-list" id="max-player-icon"
-            ><ion-icon title="Maximal Player" name="people-outline"></ion-icon>
+            ><ion-icon
+              (click)="sort('maxplayers')"
+              title="Maximal Player"
+              name="people-outline"
+            ></ion-icon>
           </ion-col>
           <ion-col size="1" class="header-list" id="min-playtime-icon"
-            ><ion-icon title="Minimal Playtime" name="time-outline"></ion-icon
+            ><ion-icon
+              (click)="sort('minplaytime')"
+              title="Minimal Playtime"
+              name="time-outline"
+            ></ion-icon
           ></ion-col>
           <ion-col size="1" class="header-list" id="max-playtime-icon"
-            ><ion-icon title="Maximal Playtime" name="time"></ion-icon
+            ><ion-icon
+              (click)="sort('maxplayers')"
+              title="Maximal Playtime"
+              name="time"
+            ></ion-icon
           ></ion-col>
           <ion-col size="1" class="header-list" id="year-published-icon"
-            ><ion-icon title="Year Published" name="calendar-outline"></ion-icon
+            ><ion-icon
+              (click)="sort('yearpublished')"
+              title="Year Published"
+              name="calendar-outline"
+            ></ion-icon
           ></ion-col>
         </ion-row>
       </ion-grid>
     </ion-item>
-    <ion-item *ngFor="let game of userGameList?.items">
+    <ion-item
+      *ngFor="let game of userGameList?.items | sort: {property: column, order: order}"
+    >
       <ion-grid>
         <ion-row>
           <ion-col size="1">

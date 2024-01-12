@@ -7,9 +7,11 @@ import { IonicModule } from '@ionic/angular';
 import { ListPageRoutingModule } from './list-routing.module';
 
 import { ListPage } from './list.page';
+import { SearchPipe } from 'src/pipes/search.pipe';
+import { SortPipe } from 'src/pipes/sort.pipe';
 
 @NgModule({
   imports: [CommonModule, FormsModule, IonicModule, ListPageRoutingModule],
-  declarations: [ListPage],
+  declarations: [ListPage, SortPipe],
 })
 export class ListPageModule {}

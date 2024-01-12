@@ -9,9 +9,10 @@ import * as xml2js from 'xml2js';
 export class BggApiService {
   constructor(private http: HttpClient) {}
 
-  getUserInfo() {
+  getUserInfo(userName: string) {
+    userName = userName || 'Leviasa';
     return this.http
-      .get('https://boardgamegeek.com/xmlapi/collection/Leviasa', {
+      .get(`https://boardgamegeek.com/xmlapi/collection/${userName}`, {
         responseType: 'text',
       })
       .pipe(switchMap(async (xml) => await this.parseXmlToJson(xml)));

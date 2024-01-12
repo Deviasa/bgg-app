@@ -96,7 +96,7 @@ export class BggGame {
   public objectType: 'boardgame' | string;
   public thumbnail: string;
   public name: string;
-  public yearpublished?: number;
+  public yearpublished: number;
   public minplayers: number;
   public maxplayers: number;
   public minplaytime: number;
@@ -109,9 +109,7 @@ export class BggGame {
     this.objectType = data.$.objecttype;
     this.thumbnail = data.thumbnail.trim();
     this.name = data.name._;
-    this.yearpublished = data.yearpublished
-      ? Number.parseInt(data.yearpublished)
-      : undefined;
+    this.yearpublished = Number.parseInt(data.yearpublished ?? '0');
     this.minplayers = Number.parseInt(data.stats.$.minplayers ?? '0');
     this.maxplayers = Number.parseInt(data.stats.$.maxplayers ?? '0');
     this.minplaytime = Number.parseInt(data.stats.$.minplaytime ?? '0');

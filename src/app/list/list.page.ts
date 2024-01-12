@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { BggApiService } from '../services/bgg-api.service';
-import { Observable } from 'rxjs';
 import { BggResponse } from '../services/models/bgg-response.model';
 
 @Component({
@@ -15,8 +14,20 @@ export class ListPage implements OnInit {
 
   ngOnInit() {}
 
-  printToConsole() {
-    this.bggApi.getUserInfo().subscribe((res: BggResponse | null) => {
+  descending: boolean = false;
+  order: number = 1;
+  column: string = 'name';
+
+  userName: string = '';
+
+  sort(column: string) {
+    this.descending = !this.descending;
+    this.order = this.descending ? 1 : -1;
+    this.column = column;
+  }
+
+  loadGameList(userName: string) {
+    this.bggApi.getUserInfo(userName).subscribe((res: BggResponse | null) => {
       if (res !== null) {
         this.userGameList = res;
       }
