@@ -1,5 +1,10 @@
 import { Component } from '@angular/core';
+import { Storage } from '@ionic/storage-angular';
 import { BggApiService } from './services/bgg-api.service';
+import { Drivers } from '@ionic/storage';
+import { BggStorageService } from './services/storage.service';
+import { ModalController } from '@ionic/angular';
+import { LoginModalComponent } from './components/login-modal/login-modal.component';
 
 @Component({
   selector: 'app-root',
@@ -16,5 +21,25 @@ export class AppComponent {
     { title: 'Spam', url: '/folder/spam', icon: 'warning' },
   ];
   public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
-  constructor(private bggApi: BggApiService) {}
+  constructor(
+    private bggApi: BggApiService,
+    private storage: Storage,
+    private bggStorage: BggStorageService,
+    private modalController: ModalController
+  ) {}
+
+  async openLoginModal() {
+    const modal = await this.modalController.create({
+      component: LoginModalComponent,
+    });
+    return await modal.present();
+  }
+  ngOnInit() {
+    const store = new Storage({
+      driverOrder: [Drivers.IndexedDB],
+    });
+    this.storage.create().then(() => {
+      this.bggStorage.init();
+    });
+  }
 }

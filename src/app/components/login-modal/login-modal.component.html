@@ -1,0 +1,38 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title> Login </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form (keyup.enter)="login()">
+    <ion-item>
+      <ion-label position="floating">Username</ion-label>
+      <ion-input [(ngModel)]="username" type="text" name="username"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Password</ion-label>
+      <ion-input
+        [type]="showPassword ? 'text' : 'password'"
+        [(ngModel)]="password"
+        name="password"
+      ></ion-input>
+      <ion-icon
+        class="password-input"
+        slot="end"
+        [name]="showPassword ? 'eye-off' : 'eye'"
+        (click)="showPassword = !showPassword"
+      ></ion-icon>
+    </ion-item>
+    <ion-button type="submit" expand="full" (click)="login()">Login</ion-button>
+  </form> </ion-content
+><ion-input
+  class="password-input"
+  [type]="showPassword ? 'text' : 'password'"
+  [(ngModel)]="password"
+></ion-input>

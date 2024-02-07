@@ -27,15 +27,19 @@
     "@capacitor/keyboard": "5.0.7",
     "@capacitor/status-bar": "5.0.6",
     "@ionic/angular": "^7.0.0",
+    "@ionic/storage-angular": "^4.0.0",
+    "cordova-sqlite-storage": "^6.1.0",
     "crypto": "^1.0.1",
     "crypto-browserify": "^3.12.0",
     "ionicons": "^7.0.0",
+    "localforage-cordovasqlitedriver": "^1.8.0",
     "path": "^0.12.7",
     "rxjs": "~7.8.0",
     "stream": "^0.0.2",
     "timer-node": "^5.0.7",
     "timers": "^0.1.1",
     "tslib": "^2.3.0",
+    "typescript-cookie": "^1.0.6",
     "xml2js": "^0.6.2",
     "xml2json": "^0.12.0",
     "zone.js": "~0.14.2"
@@ -69,10 +73,9 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "ts-node": "^8.3.0",
-    "typescript": "~5.2.2",
-    "browser": {
-      "crypto": false
-    }
+    "typescript": "~5.2.2"
   },
-  "description": "An Ionic project"
+  "description": "An Ionic project",
+  "main": "karma.conf.js",
+  "license": "ISC"
 }

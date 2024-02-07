@@ -19,3 +19,11 @@ ion-popover {
   --backdrop-opacity: 0;
   font-size: small;
 }
+
+.error-message {
+  color: red;
+}
+
+ion-input.error {
+  --color: red; /* Rot */
+}

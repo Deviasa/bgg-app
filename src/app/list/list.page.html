@@ -1,5 +1,8 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
     <ion-title>Game List</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -10,12 +13,17 @@
       <ion-title size="large">List</ion-title>
     </ion-toolbar>
   </ion-header>
-  <ion-input
-    type="text"
-    placeholder="Enter Username"
-    [(ngModel)]="userName"
-  ></ion-input>
-  <ion-button (click)="loadGameList(userName)">Load Game List</ion-button>
+  <form (keyup.enter)="loadGameList(username)">
+    <ion-input
+      type="text"
+      placeholder="Enter Username"
+      [(ngModel)]="username"
+      name="username"
+      [class.error]="errorMessage"
+    ></ion-input>
+    <ion-button (click)="loadGameList(username)">Load Game List</ion-button>
+    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+  </form>
   <ion-list>
     <ion-list-header> </ion-list-header>
     <ion-item>
@@ -64,7 +72,8 @@
       </ion-grid>
     </ion-item>
     <ion-item
-      *ngFor="let game of userGameList?.items | sort: {property: column, order: order}"
+      *ngFor="let game of totalGameList?.items| sort: {property: column, order: order}"
+      [ngStyle]="{ '--ion-item-background': getColorForUsername(game.user) }"
     >
       <ion-grid>
         <ion-row>

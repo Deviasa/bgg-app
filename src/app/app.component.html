@@ -3,7 +3,13 @@
     <ion-menu contentId="main-content" type="overlay">
       <ion-content>
         <ion-list id="user-list">
-          <ion-list-header>User</ion-list-header>
+          <ion-list-header (click)="openLoginModal()">
+            Login
+            <ion-icon
+              name="heart-outline"
+              style="font-size: 50px; color: gray"
+            ></ion-icon>
+          </ion-list-header>
           <ion-note>hi&#64;ionicframework.com</ion-note>
 
           <ion-menu-toggle

@@ -9,22 +9,29 @@ import * as xml2js from 'xml2js';
 export class BggApiService {
   constructor(private http: HttpClient) {}
 
-  getUserInfo(userName: string) {
-    userName = userName || 'Leviasa';
+  getUserCollection(username: string) {
+    //username = username || 'Leviasa';
     return this.http
-      .get(`https://boardgamegeek.com/xmlapi/collection/${userName}`, {
-        responseType: 'text',
-      })
+      .get(
+        `https://boardgamegeek.com/xmlapi2/collection?username=${username}&stats=1&excludesubtype=boardgameexpansion`,
+        {
+          responseType: 'text',
+        }
+      )
       .pipe(switchMap(async (xml) => await this.parseXmlToJson(xml)));
   }
 
   async parseXmlToJson(xml: string) {
-    const data = (await xml2js.parseStringPromise(xml, {
+    const parsedData = await xml2js.parseStringPromise(xml, {
       explicitArray: false,
-    })) as IBggResponse;
-    if (!data) {
+    });
+    if (!parsedData) {
       return null; // Not found
     }
+    if (parsedData.errors) {
+      return parsedData.errors.error.message;
+    }
+    const data = parsedData as IBggResponse;
     return new BggResponse(data);
   }
 }

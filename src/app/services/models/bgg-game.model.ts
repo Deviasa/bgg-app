@@ -91,6 +91,7 @@ export interface StatusClass {
  * Parsed game from bgg xml data
  */
 export class BggGame {
+  public username?: string;
   public collectionId: number;
   public objectId: number;
   public objectType: 'boardgame' | string;

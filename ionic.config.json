@@ -4,5 +4,11 @@
     "capacitor": {}
   },
   "type": "angular",
-  "id": "8330214b"
+  "id": "8330214b",
+  "proxies": [
+    {
+      "path": "/bgg",
+      "proxyUrl": "https://boardgamegeek.com"
+    }
+  ]
 }
