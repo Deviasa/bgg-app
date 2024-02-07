@@ -1,8 +1,8 @@
 {
   "name": "bgg-app",
   "version": "0.0.1",
-  "author": "Ionic Framework",
-  "homepage": "https://ionicframework.com/",
+  "author": "Deviasa",
+  "homepage": "https://deviasa.github.io/bgg-app/",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
