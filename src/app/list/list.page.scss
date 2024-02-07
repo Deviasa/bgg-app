@@ -21,9 +21,18 @@ ion-popover {
 }
 
 .error-message {
-  color: red;
+  color: var(--ion-color-danger);
 }
 
 ion-input.error {
-  --color: red; /* Rot */
+  --color: var(--ion-color-danger);
+}
+
+ion-item {
+  --highlight-color-focused: none;
+}
+ion-input {
+  &:focus-within {
+    --highlight-color: black;
+  }
 }

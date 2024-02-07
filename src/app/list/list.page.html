@@ -16,14 +16,42 @@
   <form (keyup.enter)="loadGameList(username)">
     <ion-input
       type="text"
+      label=" Username:"
       placeholder="Enter Username"
+      [clearInput]="true"
+      [clearOnEdit]="true"
+      fill="solid"
       [(ngModel)]="username"
       name="username"
       [class.error]="errorMessage"
     ></ion-input>
-    <ion-button (click)="loadGameList(username)">Load Game List</ion-button>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button fill="solid" (click)="loadGameList(username)"
+          >Load Game List</ion-button
+        ></ion-buttons
+      >
+      <ion-buttons slot="end">
+        <ion-button
+          fill="solid"
+          color="tertiary"
+          (click)="openGameSelectionModal(totalGameList)"
+          >Random Game</ion-button
+        >
+      </ion-buttons>
+    </ion-toolbar>
     <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
   </form>
+  <div style="display: flex; flex-direction: row; gap: 10px">
+    <div *ngFor="let user of usernames">
+      <ion-button
+        size="small"
+        (click)="removeUser(user)"
+        [ngStyle]="{ '--background': getColorForUsername(user), 'color': 'black'}"
+        >{{ user }} x</ion-button
+      >
+    </div>
+  </div>
   <ion-list>
     <ion-list-header> </ion-list-header>
     <ion-item>

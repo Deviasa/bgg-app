@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { AlertController } from '@ionic/angular';
 import { BggApiService } from '../services/bgg-api.service';
 import { BggResponse } from '../services/models/bgg-response.model';
 import { BggStorageService } from '../services/storage.service';
+import { ModalController } from '@ionic/angular';
+import { GameSelectionModalComponent } from '../components/game-selection-modal/game-selection-modal.component';
 
 @Component({
   selector: 'app-list',
@@ -11,7 +14,9 @@ import { BggStorageService } from '../services/storage.service';
 export class ListPage implements OnInit {
   constructor(
     private bggApi: BggApiService,
-    private bggStorage: BggStorageService
+    private bggStorage: BggStorageService,
+    private alertController: AlertController,
+    private modalController: ModalController
   ) {}
 
   username: string = '';
@@ -20,19 +25,19 @@ export class ListPage implements OnInit {
   totalGameList: BggResponse = { items: [], total: 0 };
   //Light qualitative colour scheme that is reasonably distinct in both normal and colour-blind vision.(Paul Tol)
   colors: string[] = [
-    '#77AADD',
-    '#FFAABB',
-    '#BBCC33',
-    '#EE8866',
-    '#99DDFF',
-    '#EEDD88',
-    '#44BB99',
     '#AAAA00',
+    '#FFAABB',
+    '#44BB99',
+    '#99DDFF',
+    '#EE8866',
+    '#EEDD88',
+    '#77AADD',
+    '#BBCC33',
   ];
+  usernameColors: { username: string; color: string }[] = [];
   errorMessage: string | null = null;
 
   ngOnInit() {
-    console.log('ngOnInit: ', this.bggStorage.get('username'));
     this.bggStorage.get('gameList').then((res: BggResponse | undefined) => {
       if (res !== null && res !== undefined) {
         this.userGameList = res;
@@ -60,19 +65,21 @@ export class ListPage implements OnInit {
         if (res !== null) {
           if (res.total === undefined) {
             this.errorMessage = res.toString();
+            return;
           } else this.errorMessage = null;
+
           if (res.total === 0) {
-            console.log('No games found for user.');
+            this.showAlert('No games found for user.');
             return;
           }
 
           if (this.usernames.length >= 8) {
-            console.log('Maximum number of collections reached.');
+            this.showAlert('Maximum number of collections reached.');
             return;
           }
 
           if (this.usernames.includes(username)) {
-            console.log(`Collection for user ${username} already exists.`);
+            this.showAlert(`Collection for user ${username} already exists.`);
             return;
           }
 
@@ -96,19 +103,61 @@ export class ListPage implements OnInit {
       });
   }
 
+  async showAlert(message: string) {
+    const alert = await this.alertController.create({
+      header: 'Warning',
+      message: message,
+      cssClass: 'warning-alert',
+      buttons: [
+        {
+          text: 'OK',
+          cssClass: 'button-alert-warning',
+        },
+      ],
+    });
+
+    await alert.present();
+  }
+
   addUser(username: string) {
     this.usernames.push(username);
+    this.setColorForUsername(username);
   }
 
   removeUser(username: string) {
-    const index = this.usernames.indexOf(username);
-    if (index > -1) {
-      this.usernames.splice(index, 1);
-    }
+    this.usernames = this.usernames.filter((user) => user !== username);
+    this.filterItems(username);
   }
 
-  getColorForUsername(username: string) {
+  filterItems(username: string) {
+    this.totalGameList.items = this.totalGameList.items.filter(
+      (item) => item.user !== username
+    );
+  }
+
+  getColorForUsername(username: string): string {
+    let userColor = this.usernameColors.find(
+      (userColor) => userColor.username === username
+    );
+    if (userColor) {
+      return userColor.color;
+    }
+    return '#fff';
+  }
+
+  setColorForUsername(username: string) {
     const userIndex = this.usernames.indexOf(username);
-    return this.colors[userIndex % this.colors.length];
+    const color = this.colors[userIndex % this.colors.length];
+    this.usernameColors.push({ username, color });
+  }
+
+  async openGameSelectionModal(totalGameList: BggResponse) {
+    const modal = await this.modalController.create({
+      component: GameSelectionModalComponent,
+      componentProps: {
+        totalGameList: totalGameList,
+      },
+    });
+    await modal.present();
   }
 }

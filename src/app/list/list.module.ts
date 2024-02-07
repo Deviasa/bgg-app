@@ -7,6 +7,7 @@ import { ListPage } from './list.page';
 import { SortPipe } from 'src/pipes/sort.pipe';
 import { IonicStorageModule } from '@ionic/storage-angular';
 import { LoginModalComponent } from '../components/login-modal/login-modal.component';
+import { GameSelectionModalComponent } from '../components/game-selection-modal/game-selection-modal.component';
 
 @NgModule({
   imports: [
@@ -16,6 +17,11 @@ import { LoginModalComponent } from '../components/login-modal/login-modal.compo
     ListPageRoutingModule,
     IonicStorageModule,
   ],
-  declarations: [ListPage, SortPipe, LoginModalComponent],
+  declarations: [
+    ListPage,
+    SortPipe,
+    LoginModalComponent,
+    GameSelectionModalComponent,
+  ],
 })
 export class ListPageModule {}

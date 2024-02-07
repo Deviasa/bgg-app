@@ -28,3 +28,11 @@
 * {
   font-family: "Montserrat", sans-serif;
 }
+
+ion-alert.warning-alert {
+  --background: var(--ion-color-warning);
+}
+
+ion-alert.alert-button.button-alert-warning {
+  background-color: black;
+}
