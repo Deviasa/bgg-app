@@ -1,0 +1,38 @@
+ion-col {
+  text-align: center;
+}
+
+.game-name {
+  text-align: left;
+}
+
+.header-list {
+  font-weight: bold;
+}
+
+ion-thumbnail {
+  --size: 40px;
+  --border-radius: 20px;
+}
+
+ion-popover {
+  --backdrop-opacity: 0;
+  font-size: small;
+}
+
+.error-message {
+  color: var(--ion-color-danger);
+}
+
+ion-input.error {
+  --color: var(--ion-color-danger);
+}
+
+ion-item {
+  --highlight-color-focused: none;
+}
+ion-input {
+  &:focus-within {
+    --highlight-color: black;
+  }
+}
