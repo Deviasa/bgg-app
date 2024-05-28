@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { LoginService } from '../../services/login.service';
 import { ModalController } from '@ionic/angular';
 import { getCookie, setCookie } from 'typescript-cookie';
+import { HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login-modal',
@@ -21,16 +22,7 @@ export class LoginModalComponent implements OnInit {
   ngOnInit() {}
 
   login() {
-    this.loginService.login(this.username, this.password).subscribe(
-      (response) => {
-        console.log('Login ', this.username, this.password);
-        console.log('Login successful', response);
-      },
-      (error) => {
-        console.log('Login ', this.username, this.password);
-        console.error('Login failed', error);
-      }
-    );
+    this.loginService.login('Leviasa', '****');
   }
 
   setCookie() {

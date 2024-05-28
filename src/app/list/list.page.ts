@@ -39,12 +39,38 @@ export class ListPage implements OnInit {
 
   ngOnInit() {
     this.bggStorage.get('gameList').then((res: BggResponse | undefined) => {
-      if (res !== null && res !== undefined) {
+      if (localStorage.length > 0) {
+        this.loadStoredUsers();
+      } else if (res !== null && res !== undefined) {
         this.userGameList = res;
       } else if (this.bggStorage.get('username')) {
         this.loadGameList(this.bggStorage.get('username'));
       }
     });
+  }
+  loadStoredUsers() {
+    const storedUsers: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key: string | null = localStorage.key(i);
+      if (key && key.startsWith('Username-')) {
+        const parts = key.split('-');
+        const color: string = parts[1];
+        const username: string = parts[parts.length - 1];
+        storedUsers.push(username);
+
+        const collectionWithUser = JSON.parse(
+          localStorage.getItem(key) as string
+        );
+        this.totalGameList.items = [
+          ...this.totalGameList.items,
+          ...collectionWithUser.items,
+        ];
+        this.usernameColors.push({ username, color });
+        this.totalGameList.total += collectionWithUser.total;
+        this.bggStorage.set('gameList', this.totalGameList);
+      }
+    }
+    this.usernames = storedUsers;
   }
 
   descending: boolean = false;
@@ -99,6 +125,15 @@ export class ListPage implements OnInit {
           ];
           this.totalGameList.total += collectionWithUser.total;
           this.bggStorage.set('gameList', this.totalGameList);
+          localStorage.setItem(
+            'Username-' +
+              this.usernameColors.find(
+                (userColor) => userColor.username === username
+              )?.color +
+              '-' +
+              username,
+            JSON.stringify(this.totalGameList)
+          );
         }
       });
   }
@@ -127,6 +162,13 @@ export class ListPage implements OnInit {
   removeUser(username: string) {
     this.usernames = this.usernames.filter((user) => user !== username);
     this.filterItems(username);
+    localStorage.removeItem(
+      'Username-' +
+        this.usernameColors.find((userColor) => userColor.username === username)
+          ?.color +
+        '-' +
+        username
+    );
   }
 
   filterItems(username: string) {

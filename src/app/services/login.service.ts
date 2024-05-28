@@ -1,18 +1,64 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { CookieService } from 'ngx-cookie-service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LoginService {
-  private apiUrl = 'https://boardgamegeek.com/login/api/v1';
+  authToken: string | null = null;
+  authTokenExpiry: number = 0;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private cookieService: CookieService) {}
 
-  login(username: string, password: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}`, {
-      credentials: { username: username, password: password },
-    });
+  async login(username: string, password: string): Promise<void> {
+    const body = {
+      credentials: {
+        username: username,
+        password: password,
+      },
+    };
+
+    const headers = new HttpHeaders().set('Access-Control-Allow-Origin', '*');
+
+    const response = await this.http
+      .post('https://boardgamegeek.com/login/api/v1', body, {
+        headers: headers,
+        observe: 'response',
+        withCredentials: true,
+      })
+      .toPromise()
+      .then((res) => {
+        console.log(response);
+        const setCookieHeader = res?.headers.get('Set-Cookie');
+
+        if (setCookieHeader) {
+          const cookies = setCookieHeader.split(';');
+          const bggpassword = cookies.find(
+            (cookie) =>
+              cookie.startsWith('bggpassword') && !cookie.includes('deleted')
+          );
+
+          if (bggpassword) {
+            this.authToken = bggpassword.split('=')[1];
+            this.authTokenExpiry = Date.now() + 24 * 60 * 60 * 1000; // Set expiry to 24 hours from now
+          }
+        }
+      });
+    console.log('response');
+    console.log(response);
+    const cookies = this.cookieService.getAll();
+    console.log('cookies');
+    console.log(cookies);
+    const bggpassword = cookies['bggpassword'];
+    console.log('bggpassword');
+    console.log(bggpassword);
+    if (bggpassword && bggpassword !== 'deleted') {
+      this.authToken = bggpassword;
+      this.authTokenExpiry = Date.now() + 24 * 60 * 60 * 1000;
+      console.log('auth');
+      console.log(this.authToken);
+      console.log(this.authTokenExpiry);
+    }
   }
 }
