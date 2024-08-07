@@ -45,7 +45,7 @@
     "tslib": "^2.6.3",
     "typescript-cookie": "^1.0.6",
     "xml2js": "^0.6.2",
-    "xml2json": "^0.12.0",
+    "xml2json": "^0.7.1",
     "zone.js": "~0.14.8"
   },
   "devDependencies": {
@@ -66,9 +66,10 @@
     "@types/js-cookie": "^3.0.6",
     "@types/xml2js": "^0.4.14",
     "@types/xml2json": "^0.11.6",
-    "@typescript-eslint/eslint-plugin": "^8.0.0",
-    "@typescript-eslint/parser": "^8.0.0",
-    "eslint": "^9.8.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.1",
+    "@typescript-eslint/parser": "^8.0.1",
+    "angular-cli-ghpages": "^2.0.1",
+    "eslint": "^8.57.0",
     "eslint-plugin-import": "2.29.1",
     "eslint-plugin-jsdoc": "48.11.0",
     "eslint-plugin-prefer-arrow": "1.2.3",
