@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
-import { BggApiService } from '../services/bgg-api.service';
-import { BggResponse } from '../services/models/bgg-response.model';
-import { BggStorageService } from '../services/storage.service';
+import { BggApiService } from './services/bgg-api.service';
+import { BggResponse } from './services/models/bgg-response.model';
+import { BggStorageService } from './services/storage.service';
 import { ModalController } from '@ionic/angular';
-import { GameSelectionModalComponent } from '../components/game-selection-modal/game-selection-modal.component';
+import { GameSelectionModalComponent } from './components/game-selection-modal/game-selection-modal.component';
 
 @Component({
-  selector: 'app-list',
+  selector: 'app-root',
   templateUrl: './list.page.html',
   styleUrls: ['./list.page.scss'],
 })
