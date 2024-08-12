@@ -100,7 +100,7 @@
       </ion-grid>
     </ion-item>
     <ion-item
-      *ngFor="let game of totalGameList?.items| sort: {property: column, order: order}"
+      *ngFor="let game of totalGameList?.items | sort: {property: column, order: order}"
       [ngStyle]="{ '--ion-item-background': getColorForUsername(game.user) }"
     >
       <ion-grid>

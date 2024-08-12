@@ -1,20 +1,26 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { CommonModule } from '@angular/common';
 import { RouteReuseStrategy } from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { Drivers } from '@ionic/storage';
 import { IonicStorageModule } from '@ionic/storage-angular';
 import * as CordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
-import { AppComponent } from './app.component';
-import { AppRoutingModule } from './app-routing.module';
+import { ListPage } from './list.page';
+import { ListPageRoutingModule } from './list-routing.module';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { GameSelectionModalComponent } from './components/game-selection-modal/game-selection-modal.component';
+import { FormsModule } from '@angular/forms';
+import { SortPipe } from 'src/pipes/sort.pipe';
+import { BrowserModule } from '@angular/platform-browser';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [GameSelectionModalComponent, ListPage, SortPipe],
   imports: [
-    BrowserModule,
+    CommonModule,
     IonicModule.forRoot(),
-    AppRoutingModule,
+    FormsModule,
+    BrowserModule,
+    ListPageRoutingModule,
     HttpClientModule,
     IonicStorageModule.forRoot({
       driverOrder: [
@@ -28,6 +34,6 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     HttpClient,
   ],
-  bootstrap: [AppComponent],
+  bootstrap: [ListPage],
 })
-export class AppModule {}
+export class ListPageModule {}
