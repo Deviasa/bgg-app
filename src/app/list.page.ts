@@ -23,7 +23,7 @@ export class ListPage implements OnInit {
   usernames: string[] = [];
   userGameList: BggResponse | undefined;
   totalGameList: BggResponse = { items: [], total: 0 };
-  //Light qualitative colour scheme that is reasonably distinct in both normal and colour-blind vision.(Paul Tol)
+  //Light qualitative color scheme that is reasonably distinct in both normal and color-blind vision.(Paul Tol)
   colors: string[] = [
     '#AAAA00',
     '#FFAABB',

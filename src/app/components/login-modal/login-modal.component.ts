@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { LoginService } from '../../services/login.service';
 import { ModalController } from '@ionic/angular';
-import { getCookie, setCookie } from 'typescript-cookie';
-import { HttpResponse } from '@angular/common/http';
+import { LoginService } from '../../services/login.service';
+import { setCookie } from 'typescript-cookie';
 
 @Component({
   selector: 'app-login-modal',

@@ -15,7 +15,10 @@ export class BggResponse {
   public items: BggGame[];
   public total: number;
 
-  constructor(data: IBggResponse) {
+  constructor(data: any) {
+    if (!data || !data.items.$) {
+      throw new Error('Invalid data: Missing $ property');
+    }
     this.total = Number.parseInt(data.items.$.totalitems);
     const items = data.items.item
       ? Array.isArray(data.items.item)
@@ -23,6 +26,6 @@ export class BggResponse {
         : [data.items.item]
       : [];
 
-    this.items = items.map((item) => new BggGame(item));
+    this.items = items.map((item: IBggGame) => new BggGame(item));
   }
 }

@@ -1,3 +1,23 @@
 {
-  "typescript.preferences.autoImportFileExcludePatterns": ["@ionic/angular/common", "@ionic/angular/standalone"]
+  "typescript.preferences.autoImportFileExcludePatterns": [
+    "@ionic/angular/common",
+    "@ionic/angular/standalone"
+  ],
+  "cSpell.words": [
+    "bggpassword",
+    "cordovasqlitedriver",
+    "Deviasa",
+    "devkit",
+    "Leviasa",
+    "localforage",
+    "maxplayers",
+    "maxplaytime",
+    "minplayers",
+    "minplaytime",
+    "pubdate",
+    "styleext",
+    "termsofuse",
+    "totalitems",
+    "yearpublished"
+  ]
 }
