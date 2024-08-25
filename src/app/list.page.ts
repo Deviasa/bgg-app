@@ -28,21 +28,24 @@ export class ListPage implements OnInit {
   errorMessage: string | null = null;
 
   ngOnInit() {
-    if (!this.bggStorage.get('gameList')) {
-      console.log('bggStorage', this.bggStorage);
-      console.error('bggStorage has no gameList');
-      return;
-    }
-
-    this.bggStorage.get('gameList').then((res: BggResponse | undefined) => {
-      if (localStorage.length > 0) {
-        this.loadStoredUsers();
-      } else if (res !== null && res !== undefined) {
-        this.userGameList = res;
-      } else if (this.bggStorage.get('username')) {
-        this.loadGameList(this.bggStorage.get('username'));
+    this.bggStorage.init().then(() => {
+      if (!this.bggStorage.get('gameList')) {
+        console.log('bggStorage', this.bggStorage);
+        console.error('bggStorage has no gameList');
+        return;
       }
-    });
+
+      this.bggStorage.get('gameList').then((res: BggResponse | undefined) => {
+        if (localStorage.length > 0) {
+          this.loadStoredUsers();
+        } else if (res !== null && res !== undefined) {
+          this.userGameList = res;
+        } else if (this.bggStorage.get('username')) {
+          this.loadGameList(this.bggStorage.get('username'));
+        }
+      });
+    })
+
   }
   loadStoredUsers() {
     const storedUsers: string[] = [];

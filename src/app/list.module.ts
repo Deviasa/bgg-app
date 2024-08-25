@@ -4,7 +4,6 @@ import { RouteReuseStrategy } from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { Drivers } from '@ionic/storage';
 import { IonicStorageModule } from '@ionic/storage-angular';
-import * as CordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
 import { ListPage } from './list.page';
 import { ListPageRoutingModule } from './list-routing.module';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -23,7 +22,7 @@ import { BrowserModule } from '@angular/platform-browser';
     ListPageRoutingModule,
     HttpClientModule,
     IonicStorageModule.forRoot({
-      driverOrder: [CordovaSQLiteDriver._driver, Drivers.IndexedDB, Drivers.LocalStorage],
+      driverOrder: [Drivers.LocalStorage],
     }),
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, HttpClient],
