@@ -17,10 +17,12 @@ export class BggStorageService {
     this._storage = storage;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public set(key: string, value: any) {
     return this._storage?.set(key, value);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public get(key: string): any {
     return this._storage?.get(key);
   }

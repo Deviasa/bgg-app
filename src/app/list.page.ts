@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
+import { GameSelectionModalComponent } from './components/game-selection-modal/game-selection-modal.component';
 import { BggApiService } from './services/bgg-api.service';
 import { BggResponse } from './services/models/bgg-response.model';
 import { BggStorageService } from './services/storage.service';
-import { ModalController } from '@ionic/angular';
-import { GameSelectionModalComponent } from './components/game-selection-modal/game-selection-modal.component';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +15,7 @@ export class ListPage implements OnInit {
     private bggApi: BggApiService,
     private bggStorage: BggStorageService,
     private alertController: AlertController,
-    private modalController: ModalController
+    private modalController: ModalController,
   ) {}
 
   username: string = '';
@@ -24,20 +23,17 @@ export class ListPage implements OnInit {
   userGameList: BggResponse | undefined;
   totalGameList: BggResponse = { items: [], total: 0 };
   //Light qualitative color scheme that is reasonably distinct in both normal and color-blind vision.(Paul Tol)
-  colors: string[] = [
-    '#AAAA00',
-    '#FFAABB',
-    '#44BB99',
-    '#99DDFF',
-    '#EE8866',
-    '#EEDD88',
-    '#77AADD',
-    '#BBCC33',
-  ];
+  colors: string[] = ['#AAAA00', '#FFAABB', '#44BB99', '#99DDFF', '#EE8866', '#EEDD88', '#77AADD', '#BBCC33'];
   usernameColors: { username: string; color: string }[] = [];
   errorMessage: string | null = null;
 
   ngOnInit() {
+    if (!this.bggStorage.get('gameList')) {
+      console.log('bggStorage', this.bggStorage);
+      console.error('bggStorage has no gameList');
+      return;
+    }
+
     this.bggStorage.get('gameList').then((res: BggResponse | undefined) => {
       if (localStorage.length > 0) {
         this.loadStoredUsers();
@@ -58,13 +54,8 @@ export class ListPage implements OnInit {
         const username: string = parts[parts.length - 1];
         storedUsers.push(username);
 
-        const collectionWithUser = JSON.parse(
-          localStorage.getItem(key) as string
-        );
-        this.totalGameList.items = [
-          ...this.totalGameList.items,
-          ...collectionWithUser.items,
-        ];
+        const collectionWithUser = JSON.parse(localStorage.getItem(key) as string);
+        this.totalGameList.items = [...this.totalGameList.items, ...collectionWithUser.items];
         this.usernameColors.push({ username, color });
         this.totalGameList.total += collectionWithUser.total;
         this.bggStorage.set('gameList', this.totalGameList);
@@ -84,58 +75,51 @@ export class ListPage implements OnInit {
   }
 
   loadGameList(username: string) {
-    this.bggApi
-      .getUserCollection(username)
-      .subscribe((res: BggResponse | null) => {
-        if (res) console.log('res: ', res);
-        if (res !== null) {
-          if (res.total === undefined) {
-            this.errorMessage = res.toString();
-            return;
-          } else this.errorMessage = null;
+    this.bggApi.getUserCollection(username).subscribe((res: BggResponse | null) => {
+      if (res) console.log('res: ', res);
+      if (res !== null) {
+        if (res.total === undefined) {
+          this.errorMessage = res.toString();
+          return;
+        } else this.errorMessage = null;
 
-          if (res.total === 0) {
-            this.showAlert('No games found for user.');
-            return;
-          }
-
-          if (this.usernames.length >= 8) {
-            this.showAlert('Maximum number of collections reached.');
-            return;
-          }
-
-          if (this.usernames.includes(username)) {
-            this.showAlert(`Collection for user ${username} already exists.`);
-            return;
-          }
-
-          this.addUser(username);
-          const collectionWithUser: BggResponse = {
-            items: res.items.map((item) => ({
-              ...item,
-              user: username,
-            })),
-            total: res.total,
-          };
-
-          this.userGameList = collectionWithUser;
-          this.totalGameList.items = [
-            ...this.totalGameList.items,
-            ...collectionWithUser.items,
-          ];
-          this.totalGameList.total += collectionWithUser.total;
-          this.bggStorage.set('gameList', this.totalGameList);
-          localStorage.setItem(
-            'Username-' +
-              this.usernameColors.find(
-                (userColor) => userColor.username === username
-              )?.color +
-              '-' +
-              username,
-            JSON.stringify(this.totalGameList)
-          );
+        if (res.total === 0) {
+          this.showAlert('No games found for user.');
+          return;
         }
-      });
+
+        if (this.usernames.length >= 8) {
+          this.showAlert('Maximum number of collections reached.');
+          return;
+        }
+
+        if (this.usernames.includes(username)) {
+          this.showAlert(`Collection for user ${username} already exists.`);
+          return;
+        }
+
+        this.addUser(username);
+        const collectionWithUser: BggResponse = {
+          items: res.items.map((item) => ({
+            ...item,
+            user: username,
+          })),
+          total: res.total,
+        };
+
+        this.userGameList = collectionWithUser;
+        this.totalGameList.items = [...this.totalGameList.items, ...collectionWithUser.items];
+        this.totalGameList.total += collectionWithUser.total;
+        this.bggStorage.set('gameList', this.totalGameList);
+        localStorage.setItem(
+          'Username-' +
+            this.usernameColors.find((userColor) => userColor.username === username)?.color +
+            '-' +
+            username,
+          JSON.stringify(this.totalGameList),
+        );
+      }
+    });
   }
 
   async showAlert(message: string) {
@@ -163,24 +147,16 @@ export class ListPage implements OnInit {
     this.usernames = this.usernames.filter((user) => user !== username);
     this.filterItems(username);
     localStorage.removeItem(
-      'Username-' +
-        this.usernameColors.find((userColor) => userColor.username === username)
-          ?.color +
-        '-' +
-        username
+      'Username-' + this.usernameColors.find((userColor) => userColor.username === username)?.color + '-' + username,
     );
   }
 
   filterItems(username: string) {
-    this.totalGameList.items = this.totalGameList.items.filter(
-      (item) => item.user !== username
-    );
+    this.totalGameList.items = this.totalGameList.items.filter((item) => item.user !== username);
   }
 
   getColorForUsername(username: string): string {
-    let userColor = this.usernameColors.find(
-      (userColor) => userColor.username === username
-    );
+    const userColor = this.usernameColors.find((userColor) => userColor.username === username);
     if (userColor) {
       return userColor.color;
     }

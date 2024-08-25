@@ -9,7 +9,10 @@ export class LoginService {
   authToken: string | null = null;
   authTokenExpiry: number = 0;
 
-  constructor(private http: HttpClient, private cookieService: CookieService) {}
+  constructor(
+    private http: HttpClient,
+    private cookieService: CookieService,
+  ) {}
 
   async login(username: string, password: string): Promise<void> {
     const body = {
@@ -34,10 +37,7 @@ export class LoginService {
 
         if (setCookieHeader) {
           const cookies = setCookieHeader.split(';');
-          const bggpassword = cookies.find(
-            (cookie) =>
-              cookie.startsWith('bggpassword') && !cookie.includes('deleted')
-          );
+          const bggpassword = cookies.find((cookie) => cookie.startsWith('bggpassword') && !cookie.includes('deleted'));
 
           if (bggpassword) {
             this.authToken = bggpassword.split('=')[1];
