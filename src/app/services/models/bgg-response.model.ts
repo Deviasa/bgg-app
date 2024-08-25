@@ -16,13 +16,12 @@ export class BggResponse {
   public total: number;
 
   constructor(data: IBggResponse) {
+    if (!data || !data.items.$) {
+      throw new Error('Invalid data.');
+    }
     this.total = Number.parseInt(data.items.$.totalitems);
-    const items = data.items.item
-      ? Array.isArray(data.items.item)
-        ? data.items.item
-        : [data.items.item]
-      : [];
+    const items = data.items.item ? (Array.isArray(data.items.item) ? data.items.item : [data.items.item]) : [];
 
-    this.items = items.map((item) => new BggGame(item));
+    this.items = items.map((item: IBggGame) => new BggGame(item));
   }
 }

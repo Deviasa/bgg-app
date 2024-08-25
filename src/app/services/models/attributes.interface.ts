@@ -1,3 +1,3 @@
 export interface IAttributes<T> {
-  _attributes: T
+  _attributes: T;
 }

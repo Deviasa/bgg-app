@@ -23,17 +23,10 @@ import { BrowserModule } from '@angular/platform-browser';
     ListPageRoutingModule,
     HttpClientModule,
     IonicStorageModule.forRoot({
-      driverOrder: [
-        CordovaSQLiteDriver._driver,
-        Drivers.IndexedDB,
-        Drivers.LocalStorage,
-      ],
+      driverOrder: [CordovaSQLiteDriver._driver, Drivers.IndexedDB, Drivers.LocalStorage],
     }),
   ],
-  providers: [
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    HttpClient,
-  ],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, HttpClient],
   bootstrap: [ListPage],
 })
 export class ListPageModule {}
