@@ -1,16 +1,16 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouteReuseStrategy } from '@angular/router';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
+import { RouteReuseStrategy, RouterModule } from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { Drivers } from '@ionic/storage';
 import { IonicStorageModule } from '@ionic/storage-angular';
-import { ListPage } from './list.page';
-import { ListPageRoutingModule } from './list-routing.module';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { GameSelectionModalComponent } from './components/game-selection-modal/game-selection-modal.component';
-import { FormsModule } from '@angular/forms';
 import { SortPipe } from 'src/pipes/sort.pipe';
-import { BrowserModule } from '@angular/platform-browser';
+import { GameSelectionModalComponent } from './components/game-selection-modal/game-selection-modal.component';
+import { ListPageRoutingModule } from './list-routing.module';
+import { ListPage } from './list.page';
 
 @NgModule({
   declarations: [GameSelectionModalComponent, ListPage, SortPipe],
@@ -18,6 +18,7 @@ import { BrowserModule } from '@angular/platform-browser';
     CommonModule,
     IonicModule.forRoot(),
     FormsModule,
+    RouterModule.forRoot([]),
     BrowserModule,
     ListPageRoutingModule,
     HttpClientModule,
@@ -25,7 +26,10 @@ import { BrowserModule } from '@angular/platform-browser';
       driverOrder: [Drivers.LocalStorage],
     }),
   ],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, HttpClient],
+  providers: [
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    HttpClient,
+  ],
   bootstrap: [ListPage],
 })
 export class ListPageModule {}

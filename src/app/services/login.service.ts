@@ -32,12 +32,14 @@ export class LoginService {
       })
       .toPromise()
       .then((res) => {
-        console.log(response);
         const setCookieHeader = res?.headers.get('Set-Cookie');
 
         if (setCookieHeader) {
           const cookies = setCookieHeader.split(';');
-          const bggpassword = cookies.find((cookie) => cookie.startsWith('bggpassword') && !cookie.includes('deleted'));
+          const bggpassword = cookies.find(
+            (cookie) =>
+              cookie.startsWith('bggpassword') && !cookie.includes('deleted'),
+          );
 
           if (bggpassword) {
             this.authToken = bggpassword.split('=')[1];
@@ -45,20 +47,14 @@ export class LoginService {
           }
         }
       });
-    console.log('response');
-    console.log(response);
+
     const cookies = this.cookieService.getAll();
-    console.log('cookies');
-    console.log(cookies);
+
     const bggpassword = cookies['bggpassword'];
-    console.log('bggpassword');
-    console.log(bggpassword);
+
     if (bggpassword && bggpassword !== 'deleted') {
       this.authToken = bggpassword;
       this.authTokenExpiry = Date.now() + 24 * 60 * 60 * 1000;
-      console.log('auth');
-      console.log(this.authToken);
-      console.log(this.authTokenExpiry);
     }
   }
 }

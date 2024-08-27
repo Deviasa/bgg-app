@@ -9,10 +9,16 @@
 
 <ion-content>
   <ion-item>
-    <ion-input label="Numbers of Players" [(ngModel)]="numberOfPlayers" type="number"></ion-input>
+    <ion-input
+      label="Numbers of Players"
+      [(ngModel)]="numberOfPlayers"
+      type="number"
+    ></ion-input>
   </ion-item>
 
-  <ion-button expand="full" (click)="searchGame(numberOfPlayers)">Search</ion-button>
+  <ion-button expand="full" (click)="searchGame(numberOfPlayers)"
+    >Search</ion-button
+  >
 
   <div *ngIf="selectedGame" class="center-content">
     <h2>{{ selectedGame.name }}</h2>

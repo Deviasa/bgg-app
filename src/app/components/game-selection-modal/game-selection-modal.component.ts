@@ -17,10 +17,13 @@ export class GameSelectionModalComponent {
 
   searchGame(numberOfPlayers: number) {
     const suitableGames = this.totalGameList.items.filter(
-      (game) => numberOfPlayers >= game.minplayers && numberOfPlayers <= game.maxplayers,
+      (game) =>
+        numberOfPlayers >= game.minplayers &&
+        numberOfPlayers <= game.maxplayers,
     );
 
-    this.selectedGame = suitableGames[Math.floor(Math.random() * suitableGames.length)];
+    this.selectedGame =
+      suitableGames[Math.floor(Math.random() * suitableGames.length)];
   }
 
   closeModal() {
