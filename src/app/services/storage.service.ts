@@ -8,9 +8,7 @@ import { Storage } from '@ionic/storage-angular';
 export class BggStorageService {
   private _storage: Storage | null = null;
 
-  constructor(private storage: Storage) {
-
-  }
+  constructor(private storage: Storage) {}
 
   public async init() {
     const storage = await this.storage.create();

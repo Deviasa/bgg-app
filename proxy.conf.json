@@ -1,0 +1,11 @@
+{
+  "/api": {
+    "target": "https://boardgamegeek.com", // The target API you want to proxy to
+    "secure": false, // If the target is HTTPS and you want to ignore self-signed certificates
+    "changeOrigin": true, // Modify the origin of the host header to the target URL
+    "logLevel": "debug", // Optional: logs the proxy activity
+    "pathRewrite": {
+      "^/api": "" // Removes "/api" from the request URL before sending it to the target
+    }
+  }
+}

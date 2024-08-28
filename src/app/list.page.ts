@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
 import { GameSelectionModalComponent } from './components/game-selection-modal/game-selection-modal.component';
 import { BggApiService } from './services/bgg-api.service';
 import { BggResponse } from './services/models/bgg-response.model';
 import { BggStorageService } from './services/storage.service';
+import { LoginService } from './services/login.service';
+import {LoginComponent} from "./components/login/login.component";
 
 @Component({
   selector: 'app-root',
@@ -16,6 +18,8 @@ export class ListPage implements OnInit {
     private bggStorage: BggStorageService,
     private alertController: AlertController,
     private modalController: ModalController,
+    private ls: LoginService,
+
   ) {}
 
   username: string = '';
@@ -44,8 +48,7 @@ export class ListPage implements OnInit {
           this.loadGameList(this.bggStorage.get('username'));
         }
       });
-    })
-
+    });
   }
   loadStoredUsers() {
     const storedUsers: string[] = [];
@@ -77,51 +80,53 @@ export class ListPage implements OnInit {
     this.column = column;
   }
 
-  loadGameList(username: string) {
-    this.bggApi.getUserCollection(username).subscribe((res: BggResponse | null) => {
-      if (res) console.log('res: ', res);
-      if (res !== null) {
-        if (res.total === undefined) {
-          this.errorMessage = res.toString();
-          return;
-        } else this.errorMessage = null;
+  loadGameList(username: string = 'Leviasa') {
+    this.ls.login('Leviasa', 'BG!fad87gp98').subscribe(() => {
+      this.bggApi.getUserCollection(username).subscribe((res: BggResponse | null) => {
+        if (res) console.log('res: ', res);
+        if (res !== null) {
+          if (res.total === undefined) {
+            this.errorMessage = res.toString();
+            return;
+          } else this.errorMessage = null;
 
-        if (res.total === 0) {
-          this.showAlert('No games found for user.');
-          return;
+          if (res.total === 0) {
+            this.showAlert('No games found for user.');
+            return;
+          }
+
+          if (this.usernames.length >= 8) {
+            this.showAlert('Maximum number of collections reached.');
+            return;
+          }
+
+          if (this.usernames.includes(username)) {
+            this.showAlert(`Collection for user ${username} already exists.`);
+            return;
+          }
+
+          this.addUser(username);
+          const collectionWithUser: BggResponse = {
+            items: res.items.map((item) => ({
+              ...item,
+              user: username,
+            })),
+            total: res.total,
+          };
+
+          this.userGameList = collectionWithUser;
+          this.totalGameList.items = [...this.totalGameList.items, ...collectionWithUser.items];
+          this.totalGameList.total += collectionWithUser.total;
+          this.bggStorage.set('gameList', this.totalGameList);
+          localStorage.setItem(
+            'Username-' +
+              this.usernameColors.find((userColor) => userColor.username === username)?.color +
+              '-' +
+              username,
+            JSON.stringify(this.totalGameList),
+          );
         }
-
-        if (this.usernames.length >= 8) {
-          this.showAlert('Maximum number of collections reached.');
-          return;
-        }
-
-        if (this.usernames.includes(username)) {
-          this.showAlert(`Collection for user ${username} already exists.`);
-          return;
-        }
-
-        this.addUser(username);
-        const collectionWithUser: BggResponse = {
-          items: res.items.map((item) => ({
-            ...item,
-            user: username,
-          })),
-          total: res.total,
-        };
-
-        this.userGameList = collectionWithUser;
-        this.totalGameList.items = [...this.totalGameList.items, ...collectionWithUser.items];
-        this.totalGameList.total += collectionWithUser.total;
-        this.bggStorage.set('gameList', this.totalGameList);
-        localStorage.setItem(
-          'Username-' +
-            this.usernameColors.find((userColor) => userColor.username === username)?.color +
-            '-' +
-            username,
-          JSON.stringify(this.totalGameList),
-        );
-      }
+      });
     });
   }
 
@@ -181,4 +186,51 @@ export class ListPage implements OnInit {
     });
     await modal.present();
   }
+
+  async askForLogin(username: string) {
+    const askAlert = await this.alertController.create({
+      header: 'Login?',
+      message: 'Do you want to login to your BGG-Account to get the private Informations?',
+      buttons: [
+        {
+          text: 'No',
+          role: 'cancel',
+          handler: () => {
+            this.loadGameList(username);
+          },
+        },
+        {
+          text: 'Yes',
+          role: 'confirm',
+          handler: () => {
+            this.showLoginMask(username);
+          }
+        }
+      ]
+    });
+
+    await askAlert.present();
+  }
+
+  async showLoginMask(username: string) {
+    const loginModal = await this.modalController.create({
+      component: LoginComponent,
+      componentProps: {
+        username: username,
+      },
+
+    })
+
+    loginModal.present();
+
+    await loginModal.onWillDismiss().then((res) => {
+      this.ls.login(res.data.username, res.data.password).subscribe(() => {
+        this.loadGameList(res.data.username);
+      })
+    })
+  }
+
+
+
+
 }

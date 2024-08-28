@@ -13,7 +13,7 @@
       <ion-title size="large">List</ion-title>
     </ion-toolbar>
   </ion-header>
-  <form (keyup.enter)="loadGameList(username)">
+  <form (keyup.enter)="askForLogin(username)">
     <ion-input
       type="text"
       label=" Username:"
@@ -27,7 +27,7 @@
     ></ion-input>
     <ion-toolbar>
       <ion-buttons slot="start">
-        <ion-button fill="solid" (click)="loadGameList(username)">Load Game List</ion-button></ion-buttons
+        <ion-button fill="solid" (click)="askForLogin(username)">Load Game List</ion-button></ion-buttons
       >
       <ion-buttons slot="end">
         <ion-button fill="solid" color="tertiary" (click)="openGameSelectionModal(totalGameList)"
@@ -69,6 +69,9 @@
           <ion-col size="1" class="header-list" id="year-published-icon"
             ><ion-icon (click)="sort('yearpublished')" title="Year Published" name="calendar-outline"></ion-icon
           ></ion-col>
+          <ion-col size="1" class="header-list" id="location">
+            <ion-icon (click)="sort('inventorylocation')" title="Location" name="calendar-outline"></ion-icon>
+          </ion-col>
         </ion-row>
       </ion-grid>
     </ion-item>
@@ -87,6 +90,7 @@
           <ion-col size="1">{{game.minplaytime}}</ion-col>
           <ion-col size="1">{{game.maxplaytime}}</ion-col>
           <ion-col size="1">{{game.yearpublished}}</ion-col>
+          <ion-col size="1">{{game.privateInfo?.$?.inventorylocation}}</ion-col>
         </ion-row>
       </ion-grid>
     </ion-item>

@@ -12,9 +12,23 @@ export interface IBggGame {
   stats: StatsClass;
   status: StatusClass;
   numplays: string;
+  privateinfo?: privateinfo;
 }
 export enum Objecttype {
   Thing = 'thing',
+}
+
+export interface privateinfo {
+  $: {
+    pp_currency: string;
+    pricepaid: string;
+    cv_currency: string;
+    currvalue: string;
+    quantity: number;
+    acquisitiondate: string;
+    acquiredfrom: string;
+    inventorylocation: string;
+  };
 }
 
 export enum Subtype {
@@ -103,8 +117,10 @@ export class BggGame {
   public minplaytime: number;
   public maxplaytime: number;
   public ratings?: RatingClass;
+  public privateInfo?: privateinfo;
 
   constructor(data: IBggGame) {
+    console.log(data);
     this.collectionId = Number.parseInt(data.$.collid);
     this.objectId = Number.parseInt(data.$.objectid);
     this.objectType = data.$.objecttype;
@@ -115,5 +131,6 @@ export class BggGame {
     this.maxplayers = Number.parseInt(data.stats.$.maxplayers ?? '0');
     this.minplaytime = Number.parseInt(data.stats.$.minplaytime ?? '0');
     this.maxplaytime = Number.parseInt(data.stats.$.maxplaytime ?? '0');
+    this.privateInfo = data.privateinfo;
   }
 }
