@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class UsernameColorService {
-  private colors: string[] = [
+  public colors: string[] = [
     '#AAAA00',
     '#FFAABB',
     '#44BB99',
@@ -33,7 +33,11 @@ export class UsernameColorService {
   private usernameColors: { username: string; color: string }[] = [];
 
   // Get color associated with a specific username
-  getColorForUsername(username: string): string {
+  getColorForUsername(
+    username: string,
+    usernameColors: { username: string; color: string }[],
+  ): string {
+    this.usernameColors = usernameColors || this.usernameColors;
     const userColor = this.usernameColors.find(
       (userColor) => userColor.username === username,
     );
@@ -41,7 +45,7 @@ export class UsernameColorService {
   }
 
   // Assign color to a username
-  setColorForUsername(username: string): void {
+  setColorForUsername(username: string): { username: string; color: string }[] {
     if (
       !this.usernameColors.some((userColor) => userColor.username === username)
     ) {
@@ -55,9 +59,7 @@ export class UsernameColorService {
         availableColors.length > 0 ? availableColors[0] : this.colors[0];
       this.usernameColors.push({ username, color });
     }
-  }
 
-  getColors() {
     return this.usernameColors;
   }
 }

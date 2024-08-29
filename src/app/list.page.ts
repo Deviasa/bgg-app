@@ -20,34 +20,6 @@ export class ListPage implements OnInit {
   userGameList: BggResponse | undefined;
   totalGameList: BggResponse = { items: [], total: 0 };
 
-  // Predefined color palette for users
-  colors: string[] = [
-    '#AAAA00',
-    '#FFAABB',
-    '#44BB99',
-    '#EE8866',
-    '#BBCC33',
-    '#99DDFF',
-    '#EEDD88',
-    '#77AADD',
-    '#FFDD44',
-    '#66CCEE',
-    '#CC99CC',
-    '#FFAA77',
-    '#88CCAA',
-    '#FFCC99',
-    '#99CCFF',
-    '#FF6699',
-    '#66FFCC',
-    '#FF9966',
-    '#6699FF',
-    '#CCFF99',
-    '#FF99CC',
-    '#66CC99',
-    '#FFCC66',
-    '#99FFCC',
-  ];
-
   // To store user-specific colors
   usernameColors: { username: string; color: string }[] = [];
 
@@ -185,7 +157,10 @@ export class ListPage implements OnInit {
         }
 
         // Check for color limits and duplicates
-        if (this.getLocalStorageStatus().length >= this.colors.length) {
+        if (
+          this.getLocalStorageStatus().length >=
+          this.usernameColorService.colors.length
+        ) {
           this.showAlert('Maximum number of collections reached.');
           return;
         }
@@ -273,9 +248,10 @@ export class ListPage implements OnInit {
   // Remove a user from the list and update the game collection accordingly
   public async removeUser(username: string) {
     this.usernames = this.usernames.filter((user) => user !== username);
-    this.totalGameList.items = this.totalGameList.items.filter(
-      (item) => item.user !== username,
-    );
+    this.totalGameList.items = this.totalGameList.items.filter((item) => {
+      const shouldKeep = item.user !== username;
+      return shouldKeep;
+    });
 
     // Persist updated game list to storage
     this.bggStorage.set('gameList', {
@@ -295,12 +271,16 @@ export class ListPage implements OnInit {
 
   // Retrieve color associated with a specific username
   public getColorForUsername(username: string): string {
-    return this.usernameColorService.getColorForUsername(username);
+    return this.usernameColorService.getColorForUsername(
+      username,
+      this.usernameColors,
+    );
   }
 
   // Assign a color to a username, using an available color from the predefined list
   private setColorForUsername(username: string) {
-    this.usernameColorService.setColorForUsername(username);
+    this.usernameColors =
+      this.usernameColorService.setColorForUsername(username);
   }
 
   // Get the status of usernames and their colors from local storage

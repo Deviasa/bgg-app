@@ -98,6 +98,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
+            "include": ["**/**.spec.ts", "**/**.d.ts"],
             "main": "src/test.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",
@@ -138,9 +139,7 @@
     }
   },
   "cli": {
-    "schematicCollections": [
-      "@ionic/angular-toolkit"
-    ],
+    "schematicCollections": ["@ionic/angular-toolkit"],
     "analytics": false
   },
   "schematics": {
