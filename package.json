@@ -12,29 +12,6 @@
     "deploy": "gh-pages -d ./www"
   },
   "private": true,
-  "devDependencies": {
-    "@angular-devkit/build-angular": "^18.2.1",
-    "@angular/cli": "^18.2.1",
-    "@angular/compiler-cli": "^18.2.1",
-    "@angular/language-service": "^18.2.1",
-    "@eslint/js": "^9.9.1",
-    "@types/jasmine": "^5.1.4",
-    "@types/xml2js": "^0.4.14",
-    "eslint": "^9.9.1",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-prettier": "^5.2.1",
-    "globals": "^15.9.0",
-    "jasmine": "^5.2.0",
-    "jasmine-core": "~5.2.0",
-    "jasmine-spec-reporter": "~7.0.0",
-    "karma": "~6.4.4",
-    "karma-chrome-launcher": "~3.2.0",
-    "karma-coverage": "~2.2.1",
-    "karma-jasmine": "~5.1.0",
-    "karma-jasmine-html-reporter": "~2.1.0",
-    "prettier": "3.3.3",
-    "typescript-eslint": "^8.3.0"
-  },
   "dependencies": {
     "@angular-builders/custom-webpack": "^18.0.0",
     "@angular/core": "^18.2.1",
@@ -52,5 +29,28 @@
     "timers": "^0.1.1",
     "typescript-cookie": "^1.0.6",
     "xml2js": "^0.6.2"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^18.2.1",
+    "@angular/cli": "^18.2.1",
+    "@angular/compiler-cli": "^18.2.1",
+    "@angular/language-service": "^18.2.1",
+    "@eslint/js": "^9.9.1",
+    "@types/jasmine": "^5.1.4",
+    "@types/jasminewd2": "^2.0.13",
+    "@types/xml2js": "^0.4.14",
+    "eslint": "^9.9.1",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "globals": "^15.9.0",
+    "jasmine-core": "~5.2.0",
+    "jasmine-spec-reporter": "~7.0.0",
+    "karma": "~6.4.4",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage-istanbul-reporter": "^3.0.3",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "^2.1.0",
+    "prettier": "3.3.3",
+    "typescript-eslint": "^8.3.0"
   }
 }
