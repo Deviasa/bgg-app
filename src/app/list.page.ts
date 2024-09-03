@@ -7,6 +7,9 @@ import { ModalService } from './services/modal.service';
 import { BggResponse } from './services/models/bgg-response.model';
 import { BggStorageService } from './services/storage.service';
 import { UsernameColorService } from './services/username-color.service';
+import {LoginComponent} from "./components/login/login.component";
+import {LoginService} from "./services/login.service";
+import {AlertController} from "@ionic/angular";
 
 @Component({
   selector: 'app-root',
@@ -64,6 +67,8 @@ export class ListPage implements OnInit {
     private modalService: ModalService,
     private usernameColorService: UsernameColorService,
     private router: Router,
+    private ls: LoginService,
+    private alertController: AlertController
   ) {}
 
   // Lifecycle hook to initialize the component
@@ -328,5 +333,48 @@ export class ListPage implements OnInit {
   // Open the game selection modal to display the total game list
   public async openGameSelectionModal(totalGameList: BggResponse) {
     await this.modalService.openGameSelectionModal(totalGameList);
+  }
+
+  async showLoginMask(username: string) {
+    const loginModal = await this.modalController.create({
+      component: LoginComponent,
+      componentProps: {
+        username: username,
+      },
+
+    })
+
+    loginModal.present();
+
+    await loginModal.onWillDismiss().then((res: any) => {
+      this.ls.login(res.data.username, res.data.password).subscribe(() => {
+        this.loadGameList(res.data.username);
+      })
+    })
+  }
+
+  async askForLogin(username: string) {
+    const askAlert = await this.alertController.create({
+      header: 'Login?',
+      message: 'Do you want to login to your BGG-Account to get the private Informations?',
+      buttons: [
+        {
+          text: 'No',
+          role: 'cancel',
+          handler: () => {
+            this.loadGameList(username);
+          },
+        },
+        {
+          text: 'Yes',
+          role: 'confirm',
+          handler: () => {
+            this.showLoginMask(username);
+          }
+        }
+      ]
+    });
+
+    await askAlert.present();
   }
 }
