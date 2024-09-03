@@ -7,9 +7,9 @@ import { ModalService } from './services/modal.service';
 import { BggResponse } from './services/models/bgg-response.model';
 import { BggStorageService } from './services/storage.service';
 import { UsernameColorService } from './services/username-color.service';
-import {LoginComponent} from "./components/login/login.component";
-import {LoginService} from "./services/login.service";
-import {AlertController} from "@ionic/angular";
+import { LoginComponent } from './components/login/login.component';
+import { LoginService } from './services/login.service';
+import { AlertController, ModalController} from '@ionic/angular';
 
 @Component({
   selector: 'app-root',
@@ -68,7 +68,8 @@ export class ListPage implements OnInit {
     private usernameColorService: UsernameColorService,
     private router: Router,
     private ls: LoginService,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private modalController: ModalController
   ) {}
 
   // Lifecycle hook to initialize the component
@@ -341,22 +342,22 @@ export class ListPage implements OnInit {
       componentProps: {
         username: username,
       },
-
-    })
+    });
 
     loginModal.present();
 
     await loginModal.onWillDismiss().then((res: any) => {
       this.ls.login(res.data.username, res.data.password).subscribe(() => {
         this.loadGameList(res.data.username);
-      })
-    })
+      });
+    });
   }
 
   async askForLogin(username: string) {
     const askAlert = await this.alertController.create({
       header: 'Login?',
-      message: 'Do you want to login to your BGG-Account to get the private Informations?',
+      message:
+        'Do you want to login to your BGG-Account to get the private Informations?',
       buttons: [
         {
           text: 'No',
@@ -370,9 +371,9 @@ export class ListPage implements OnInit {
           role: 'confirm',
           handler: () => {
             this.showLoginMask(username);
-          }
-        }
-      ]
+          },
+        },
+      ],
     });
 
     await askAlert.present();

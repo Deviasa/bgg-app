@@ -1,6 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
+import { BggApiService } from './bgg-api.service';
+import { switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -12,9 +14,10 @@ export class LoginService {
   constructor(
     private http: HttpClient,
     private cookieService: CookieService,
+    private bggApi: BggApiService,
   ) {}
 
-  async login(username: string, password: string): Promise<void> {
+  login(username: string, password: string) {
     const body = {
       credentials: {
         username: username,
@@ -22,39 +25,8 @@ export class LoginService {
       },
     };
 
-    const headers = new HttpHeaders().set('Access-Control-Allow-Origin', '*');
-
-    const response = await this.http
-      .post('https://boardgamegeek.com/login/api/v1', body, {
-        headers: headers,
-        observe: 'response',
-        withCredentials: true,
-      })
-      .toPromise()
-      .then((res) => {
-        const setCookieHeader = res?.headers.get('Set-Cookie');
-
-        if (setCookieHeader) {
-          const cookies = setCookieHeader.split(';');
-          const bggpassword = cookies.find(
-            (cookie) =>
-              cookie.startsWith('bggpassword') && !cookie.includes('deleted'),
-          );
-
-          if (bggpassword) {
-            this.authToken = bggpassword.split('=')[1];
-            this.authTokenExpiry = Date.now() + 24 * 60 * 60 * 1000; // Set expiry to 24 hours from now
-          }
-        }
-      });
-
-    const cookies = this.cookieService.getAll();
-
-    const bggpassword = cookies['bggpassword'];
-
-    if (bggpassword && bggpassword !== 'deleted') {
-      this.authToken = bggpassword;
-      this.authTokenExpiry = Date.now() + 24 * 60 * 60 * 1000;
-    }
+    return this.http.post('api/login/api/v1', body, {
+      withCredentials: true, // Include cookies in the request
+    });
   }
 }

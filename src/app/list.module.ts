@@ -11,10 +11,15 @@ import { SortPipe } from 'src/pipes/sort.pipe';
 import { GameSelectionModalComponent } from './components/game-selection-modal/game-selection-modal.component';
 import { ListPageRoutingModule } from './list-routing.module';
 import { ListPage } from './list.page';
-import { LoginComponent } from "./components/login/login.component";
+import { LoginComponent } from './components/login/login.component';
 
 @NgModule({
-  declarations: [GameSelectionModalComponent, ListPage, SortPipe, LoginComponent],
+  declarations: [
+    GameSelectionModalComponent,
+    ListPage,
+    SortPipe,
+    LoginComponent,
+  ],
   imports: [
     CommonModule,
     IonicModule.forRoot(),

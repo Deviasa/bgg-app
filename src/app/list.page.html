@@ -13,7 +13,7 @@
       <ion-title size="large">List</ion-title>
     </ion-toolbar>
   </ion-header>
-  <form (keyup.enter)="loadGameList(username)">
+  <form (keyup.enter)="askForLogin(username)">
     <ion-input
       type="text"
       label=" Username:"
@@ -26,7 +26,7 @@
     ></ion-input>
     <ion-toolbar>
       <ion-buttons slot="start">
-        <ion-button fill="solid" (click)="loadGameList(username)"
+        <ion-button fill="solid" (click)="askForLogin(username)"
           >Load Game List</ion-button
         ></ion-buttons
       >
