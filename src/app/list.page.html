@@ -95,6 +95,9 @@
               name="calendar-outline"
             ></ion-icon
           ></ion-col>
+          <ion-col size="1" class="header-list" id="location">
+            <ion-icon (click)="sort('inventorylocation')" title="Location" name="filing-outline"></ion-icon>
+          </ion-col>
         </ion-row>
       </ion-grid>
     </ion-item>
@@ -114,6 +117,7 @@
           <ion-col size="1">{{game.minplaytime}}</ion-col>
           <ion-col size="1">{{game.maxplaytime}}</ion-col>
           <ion-col size="1">{{game.yearpublished}}</ion-col>
+          <ion-col size="1">{{game.privateInfo?.$?.inventorylocation}}</ion-col>
         </ion-row>
       </ion-grid>
     </ion-item>
