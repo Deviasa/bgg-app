@@ -16,6 +16,7 @@ export class BggApiService {
         `https://boardgamegeek.com/xmlapi2/collection?username=${username}&stats=1&excludesubtype=boardgameexpansion`,
         {
           responseType: 'text',
+          withCredentials: 'true',
         },
       )
       .pipe(switchMap(async (xml) => await this.parseXmlToJson(xml)));

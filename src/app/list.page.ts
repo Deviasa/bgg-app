@@ -9,7 +9,7 @@ import { BggStorageService } from './services/storage.service';
 import { UsernameColorService } from './services/username-color.service';
 import { LoginComponent } from './components/login/login.component';
 import { LoginService } from './services/login.service';
-import { AlertController, ModalController} from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-root',
@@ -69,7 +69,7 @@ export class ListPage implements OnInit {
     private router: Router,
     private ls: LoginService,
     private alertController: AlertController,
-    private modalController: ModalController
+    private modalController: ModalController,
   ) {}
 
   // Lifecycle hook to initialize the component
