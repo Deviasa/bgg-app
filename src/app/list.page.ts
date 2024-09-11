@@ -10,6 +10,8 @@ import { UsernameColorService } from './services/username-color.service';
 import { LoginComponent } from './components/login/login.component';
 import { LoginService } from './services/login.service';
 import { AlertController, ModalController } from '@ionic/angular';
+import {BggGame} from "@models/app/services/models/bgg-game.model";
+import {GameDetailComponent} from "@models/app/components/game-detail/game-detail.component";
 
 @Component({
   selector: 'app-root',
@@ -363,5 +365,21 @@ export class ListPage implements OnInit {
     });
 
     await askAlert.present();
+  }
+
+  clickGameRow(game: BggGame) {
+    this.showGameDetail(game).then(() => {})
+  }
+
+  async showGameDetail(game: BggGame) {
+    const gameModal = await this.modalController.create(
+      {
+        component: GameDetailComponent,
+        componentProps: {
+          game: game,
+        }
+      })
+
+    await gameModal.present();
   }
 }

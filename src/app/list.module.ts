@@ -12,6 +12,7 @@ import { GameSelectionModalComponent } from './components/game-selection-modal/g
 import { ListPageRoutingModule } from './list-routing.module';
 import { ListPage } from './list.page';
 import { LoginComponent } from './components/login/login.component';
+import {GameDetailComponent} from "@models/app/components/game-detail/game-detail.component";
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { LoginComponent } from './components/login/login.component';
     ListPage,
     SortPipe,
     LoginComponent,
+    GameDetailComponent
   ],
   imports: [
     CommonModule,

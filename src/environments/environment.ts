@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  bggLink: 'https://www.boardgamegeek.com/xmlapi2/collection'
 };
 
 /*

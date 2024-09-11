@@ -3,20 +3,21 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { switchMap } from 'rxjs/operators';
 import { BggResponse, IBggResponse } from './models/bgg-response.model';
 import * as xml2js from 'xml2js';
+import {environment} from "@models/environments/environment";
 @Injectable({
   providedIn: 'root',
 })
 export class BggApiService {
   constructor(private http: HttpClient) {}
 
-  headers = new HttpHeaders().set('Access-Control-Allow-Origin', '*');
+  headers = new HttpHeaders().set('Access-Control-Allow-Origin', 'https://deviasa.github.io/bgg-app');
 
 
   getUserCollection(username: string, p: boolean) {
     if(p) {
       return this.http
         .get(
-          `http://localhost:3000/collection?username=${username}&showprivate=1&stats=1`,
+          `https://bgg-connector-production.up.railway.app/collection?username=${username}&showprivate=1&stats=1`,
           {
             headers: this.headers,
             responseType: 'text' as 'text',
@@ -27,7 +28,7 @@ export class BggApiService {
     } else {
       return this.http
         .get(
-          `http://localhost:3000/collection?username=${username}&stats=1`,
+          `${environment.bggLink}?username=${username}&stats=1`,
           {
             responseType: 'text' as 'text',
           },

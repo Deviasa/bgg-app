@@ -20,6 +20,18 @@ ion-popover {
   font-size: small;
 }
 
+ion-thumbnail {
+  --size: 100%;
+  --border-radius: 14px;
+}
+
+@media only screen and (max-width: 600px) {
+  .hideColumn {
+    display: none;
+  }
+}
+
+
 .error-message {
   color: var(--ion-color-danger);
 }

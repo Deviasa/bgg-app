@@ -25,7 +25,7 @@ export class LoginService {
       },
     };
 
-    return this.http.post(`http://localhost:3000/login`, body, {
+    return this.http.post(`https://bgg-connector-production.up.railway.app/login`, body, {
       withCredentials: true, // Include cookies in the request
     });
   }
