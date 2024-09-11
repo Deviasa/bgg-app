@@ -11,18 +11,30 @@ export class BggApiService {
 
   headers = new HttpHeaders().set('Access-Control-Allow-Origin', '*');
 
-  getUserCollection(username: string) {
-    return this.http
-      .get(
-        `api/xmlapi2/collection?username=${username}&showprivate=1&stats=1`,
 
-        {
-          headers: this.headers,
-          responseType: 'text',
-          withCredentials: true,
-        },
-      )
-      .pipe(switchMap(async (xml) => await this.parseXmlToJson(xml)));
+  getUserCollection(username: string, p: boolean) {
+    if(p) {
+      return this.http
+        .get(
+          `http://localhost:3000/collection?username=${username}&showprivate=1&stats=1`,
+          {
+            headers: this.headers,
+            responseType: 'text' as 'text',
+            withCredentials: true,
+          },
+        )
+        .pipe(switchMap(async (xml) => await this.parseXmlToJson(xml)));
+    } else {
+      return this.http
+        .get(
+          `http://localhost:3000/collection?username=${username}&stats=1`,
+          {
+            responseType: 'text' as 'text',
+          },
+        )
+        .pipe(switchMap(async (xml) => await this.parseXmlToJson(xml)));
+    }
+
   }
 
   async parseXmlToJson(xml: string) {

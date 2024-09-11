@@ -25,7 +25,7 @@ export class LoginService {
       },
     };
 
-    return this.http.post('api/login/api/v1', body, {
+    return this.http.post(`http://localhost:3000/login`, body, {
       withCredentials: true, // Include cookies in the request
     });
   }

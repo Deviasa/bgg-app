@@ -93,7 +93,7 @@ export class ListPage implements OnInit {
       if (localStorageUsernames.includes(username)) {
         this.loadStoredUsers(username);
       } else if (urlUsernames.includes(username)) {
-        this.loadGameList(username).then(() => {
+        this.loadGameList(username, false).then(() => {
           this.setUserToLocalStorage(username);
         });
       } else {
@@ -152,9 +152,9 @@ export class ListPage implements OnInit {
   }
 
   // Fetch the game list for a specific user from the BGG API
-  public async loadGameList(username: string) {
+  public async loadGameList(username: string, p: boolean) {
     try {
-      const res = await this.bggApi.getUserCollection(username).toPromise();
+      const res = await this.bggApi.getUserCollection(username, p).toPromise();
       if (res && res.total !== undefined) {
         this.errorMessage = null;
         if (res.total === 0) {
@@ -327,8 +327,14 @@ export class ListPage implements OnInit {
     loginModal.present();
 
     await loginModal.onWillDismiss().then((res: any) => {
-      this.ls.login(res.data.username, res.data.password).subscribe(() => {
-        this.loadGameList(res.data.username);
+      this.ls.login(res.data.username, res.data.password).subscribe({
+      next: () => {
+        console.log()
+        this.loadGameList(res.data.username, true);
+      },
+      error: err => {
+      console.error(err);
+        this.loadGameList(res.data.username, false);}
       });
     });
   }
@@ -343,7 +349,7 @@ export class ListPage implements OnInit {
           text: 'No',
           role: 'cancel',
           handler: () => {
-            this.loadGameList(username);
+            this.loadGameList(username, false);
           },
         },
         {
