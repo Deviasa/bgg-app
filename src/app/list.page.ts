@@ -12,6 +12,7 @@ import { LoginService } from './services/login.service';
 import { AlertController, ModalController } from '@ionic/angular';
 import {BggGame} from "@models/app/services/models/bgg-game.model";
 import {GameDetailComponent} from "@models/app/components/game-detail/game-detail.component";
+import {LoadingService} from "@models/app/services/loading.service";
 
 @Component({
   selector: 'app-root',
@@ -44,6 +45,7 @@ export class ListPage implements OnInit {
     private ls: LoginService,
     private alertController: AlertController,
     private modalController: ModalController,
+    private loadingService: LoadingService
   ) {}
 
   // Lifecycle hook to initialize the component
@@ -155,8 +157,14 @@ export class ListPage implements OnInit {
 
   // Fetch the game list for a specific user from the BGG API
   public async loadGameList(username: string, p: boolean) {
-    try {
-      const res = await this.bggApi.getUserCollection(username, p).toPromise();
+
+    this.loadingService.showLoading().then(() => {});
+
+      this.bggApi.getUserCollection(username, p).subscribe((res) => {
+
+        this.loadingService.hideLoading();
+
+
       if (res && res.total !== undefined) {
         this.errorMessage = null;
         if (res.total === 0) {
@@ -208,12 +216,9 @@ export class ListPage implements OnInit {
       } else {
         this.errorMessage = res ? res.toString() : 'Error loading game list.';
       }
-    } catch (error) {
-      console.error('Error loading game list:', error);
-      this.showAlert(
-        'BGG is currently processing your request. Please try again later.',
-      );
-    }
+    })
+
+
   }
 
   // Save the user's game collection to local storage

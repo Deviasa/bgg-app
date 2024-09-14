@@ -15,7 +15,9 @@ export class GameDetailComponent  implements OnInit {
     private modalCtrl: ModalController
   ) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    console.log(this.game);
+  }
 
   cancel() {
     this.modalCtrl.dismiss();

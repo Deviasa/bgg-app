@@ -13,6 +13,7 @@ export interface IBggGame {
   status: StatusClass;
   numplays: string;
   privateinfo?: privateinfo;
+  ratings?: RatingClass;
 }
 export enum Objecttype {
   Thing = 'thing',
@@ -132,5 +133,6 @@ export class BggGame {
     this.minplaytime = Number.parseInt(data.stats.$.minplaytime ?? '0');
     this.maxplaytime = Number.parseInt(data.stats.$.maxplaytime ?? '0');
     this.privateInfo = data.privateinfo;
+    this.ratings = data.ratings;
   }
 }
