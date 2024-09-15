@@ -22,6 +22,6 @@
 
   <div *ngIf="selectedGame" class="center-content">
     <h2>{{ selectedGame.name }}</h2>
-    <img [src]="selectedGame.thumbnail" alt="{{ selectedGame.name }}" />
+    <img [src]="selectedGame.thumbnail" (click)="listPage.clickGameRow(selectedGame)" alt="{{ selectedGame.name }}" />
   </div>
 </ion-content>

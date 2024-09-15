@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { BggGame } from 'src/app/services/models/bgg-game.model';
 import { BggResponse } from 'src/app/services/models/bgg-response.model';
+import {ListPage} from "@models/app/list.page";
 
 @Component({
   selector: 'app-game-selection-modal',
@@ -13,6 +14,7 @@ export class GameSelectionModalComponent {
   totalGameList: BggResponse = { items: [], total: 0 };
   numberOfPlayers: number = 0;
   selectedGame: BggGame | undefined;
+  listPage: ListPage;
   constructor(private modalController: ModalController) {}
 
   searchGame(numberOfPlayers: number) {

@@ -320,7 +320,7 @@ export class ListPage implements OnInit {
 
   // Open the game selection modal to display the total game list
   public async openGameSelectionModal(totalGameList: BggResponse) {
-    await this.modalService.openGameSelectionModal(totalGameList);
+    await this.modalService.openGameSelectionModal(totalGameList, this);
   }
 
   async showLoginMask(username: string) {
