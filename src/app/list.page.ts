@@ -334,13 +334,16 @@ export class ListPage implements OnInit {
     loginModal.present();
 
     await loginModal.onWillDismiss().then((res: any) => {
+      this.loadingService.showLoading().then(() => {});
       this.ls.login(res.data.username, res.data.password).subscribe({
       next: () => {
+        this.loadingService.hideLoading();
         console.log()
         this.loadGameList(res.data.username, true);
       },
       error: err => {
       console.error(err);
+      this.loadingService.hideLoading();
         this.loadGameList(res.data.username, false);}
       });
     });
