@@ -13,6 +13,7 @@ import { AlertController, ModalController } from '@ionic/angular';
 import {BggGame} from "@models/app/services/models/bgg-game.model";
 import {GameDetailComponent} from "@models/app/components/game-detail/game-detail.component";
 import {LoadingService} from "@models/app/services/loading.service";
+import { Share } from "@capacitor/share";
 
 @Component({
   selector: 'app-root',
@@ -77,36 +78,24 @@ export class ListPage implements OnInit {
     const usernamesPart = queryParams.get('username');
     if (usernamesPart) {
       this.usernames = usernamesPart.split(',');
+      console.log(this.usernames)
       this.mergeAndReloadUsernames();
     }
   }
 
   // Merge usernames from URL and local storage, reload data
-  private mergeAndReloadUsernames() {
+  private async mergeAndReloadUsernames() {
     const urlUsernames = this.usernames;
     const localStorageUsernames = this.getUsernamesFromLocalStorage();
 
-    // Merge unique usernames from both sources
-    const allUsernames = Array.from(
-      new Set([...urlUsernames, ...localStorageUsernames]),
-    );
-    this.usernames = allUsernames;
-
-    // Process each username by loading data or assigning color
-    allUsernames.forEach((username) => {
-      if (localStorageUsernames.includes(username)) {
-        this.loadStoredUsers(username);
-      } else if (urlUsernames.includes(username)) {
-        this.loadGameList(username, false).then(() => {
-          this.setUserToLocalStorage(username);
-        });
+    for (const u of urlUsernames) {
+      if (localStorageUsernames.includes(u)) {
+        this.loadStoredUsers(u);
       } else {
-        console.error('Error loading information for user: ', username);
+        await this.loadGameList(u, false);
+        this.setUserToLocalStorage(u);
       }
-      this.setColorForUsername(username);
-    });
-
-    this.updateUrl();
+    }
   }
 
   // Extract stored usernames from localStorage
@@ -157,67 +146,60 @@ export class ListPage implements OnInit {
 
   // Fetch the game list for a specific user from the BGG API
   public async loadGameList(username: string, p: boolean) {
-
-    this.loadingService.showLoading().then(() => {});
-
-      this.bggApi.getUserCollection(username, p).subscribe((res) => {
-
-        this.loadingService.hideLoading();
-
-
-      if (res && res.total !== undefined) {
-        this.errorMessage = null;
-        if (res.total === 0) {
-          this.showAlert('No games found for user.');
-          return;
+    await this.loadingService.showLoading().then((l) => {
+      l.present();
+      this.bggApi.getUserCollection(username, p).subscribe({
+        next: (res) => {
+          console.log('Loaded: ' + username);
+          if (res && res.total !== undefined) {
+            this.errorMessage = null;
+            if (res.total === 0) {
+              this.showAlert('No games found for user.');
+              return;
+            }
+            // Check for color limits and duplicates
+            if (this.getLocalStorageStatus().length >= this.usernameColorService.colors.length) {
+              this.showAlert('Maximum number of collections reached.');
+              return;
+            }
+            if (this.getLocalStorageStatus().find((user) => user.username === username)) {
+              this.showAlert(`Collection for user ${username} already exists.`);
+              return;
+            }
+            // Add new user collection to the game list
+            this.addUser(username);
+            const collectionWithUser: BggResponse = {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              items: res.items.map((item: any) => ({ ...item, user: username })),
+              total: res.total,
+            };
+            this.userGameList = collectionWithUser;
+            this.totalGameList.items = [
+              ...this.totalGameList.items,
+              ...collectionWithUser.items,
+            ];
+            // Persist the updated game list
+            this.bggStorage.set('gameList', {
+              items: this.totalGameList,
+              total: this.totalGameList.items.length,
+            });
+            // Save user data to local storage
+            this.setUserToLocalStorage(username);
+            // Clear username for the next input
+            this.username = '';
+          } else {
+            this.errorMessage = res ? res.toString() : 'Error loading game list.';
+          }
+        },
+        error: (err) => {
+          console.error('Error loading game list:', err);
+          this.errorMessage = 'Error loading game list.';
+        },
+        complete: () => {
+          l.dismiss();
         }
-
-        // Check for color limits and duplicates
-        if (
-          this.getLocalStorageStatus().length >=
-          this.usernameColorService.colors.length
-        ) {
-          this.showAlert('Maximum number of collections reached.');
-          return;
-        }
-        if (
-          this.getLocalStorageStatus().find(
-            (user) => user.username === username,
-          )
-        ) {
-          this.showAlert(`Collection for user ${username} already exists.`);
-          return;
-        }
-
-        // Add new user collection to the game list
-        this.addUser(username);
-        const collectionWithUser: BggResponse = {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          items: res.items.map((item: any) => ({ ...item, user: username })),
-          total: res.total,
-        };
-        this.userGameList = collectionWithUser;
-        this.totalGameList.items = [
-          ...this.totalGameList.items,
-          ...collectionWithUser.items,
-        ];
-
-        // Persist the updated game list
-        this.bggStorage.set('gameList', {
-          items: this.totalGameList,
-          total: this.totalGameList.items.length,
-        });
-
-        // Save user data to local storage
-        this.setUserToLocalStorage(username);
-
-        // Clear username for the next input
-        this.username = '';
-      } else {
-        this.errorMessage = res ? res.toString() : 'Error loading game list.';
-      }
+      });
     })
-
 
   }
 
@@ -247,16 +229,11 @@ export class ListPage implements OnInit {
     if (!this.usernames.includes(username)) {
       this.usernames.push(username);
       this.setColorForUsername(username);
-      this.updateUrl();
     }
   }
 
   // Update the URL with the current usernames as query parameters
-  private updateUrl() {
-    const queryParams =
-      this.usernames.length > 0 ? { username: this.usernames.join(',') } : {};
-    this.router.navigate(['list'], { queryParams });
-  }
+
 
   // Remove a user from the list and update the game collection accordingly
   public async removeUser(username: string) {
@@ -279,7 +256,6 @@ export class ListPage implements OnInit {
     this.usernameColors = this.usernameColors.filter(
       (user) => user.username !== username,
     );
-    this.updateUrl();
   }
 
   // Retrieve color associated with a specific username
@@ -321,6 +297,12 @@ export class ListPage implements OnInit {
   // Open the game selection modal to display the total game list
   public async openGameSelectionModal(totalGameList: BggResponse) {
     await this.modalService.openGameSelectionModal(totalGameList, this);
+  }
+
+  async shareList() {
+    await Share.share({
+      url: `https://deviasa.github.io/bgg-app/?username=${this.usernames.join(',')}`,
+    })
   }
 
   async showLoginMask(username: string) {

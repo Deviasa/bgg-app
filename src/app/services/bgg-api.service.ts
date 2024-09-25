@@ -58,7 +58,6 @@ export class BggApiService {
       return parsedData.errors.error.message;
     }
     const data = parsedData as IBggResponse;
-    console.log(data);
     return new BggResponse(data);
   }
 }
