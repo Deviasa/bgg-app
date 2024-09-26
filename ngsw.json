@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1727292417272,
+  "timestamp": 1727381254211,
   "index": "/bgg-app/index.html",
   "assetGroups": [
     {
@@ -69,12 +69,12 @@
         "/bgg-app/9977.eef63e764a77cc15.js",
         "/bgg-app/common.fd3206a425407fe6.js",
         "/bgg-app/index.html",
-        "/bgg-app/main.cdf4b139fb397498.js",
+        "/bgg-app/main.4138813e5a69009f.js",
         "/bgg-app/manifest.webmanifest",
         "/bgg-app/polyfills-core-js.f47eb60cc4ed4bde.js",
         "/bgg-app/polyfills-dom.bf542500b6fca113.js",
         "/bgg-app/polyfills.566e0748c2fd0624.js",
-        "/bgg-app/runtime.24990a8504713e25.js",
+        "/bgg-app/runtime.425d17e5b28b8733.js",
         "/bgg-app/styles.e61d73efeb43147b.css"
       ],
       "patterns": []
@@ -1522,13 +1522,13 @@
     "/bgg-app/assets/icons/logo_96x96px.png": "c516b66197387abcc78cc4b3cc0e6576d0a4c6a4",
     "/bgg-app/assets/shapes.svg": "638f87e27e6fc7ddfd6e6b262ea70d690f6c7011",
     "/bgg-app/common.fd3206a425407fe6.js": "c1c2ab095d979af57dc1a09a3d078443f8232603",
-    "/bgg-app/index.html": "227c8bbd84447b8e14b6c9fc68109eea897e4fba",
-    "/bgg-app/main.cdf4b139fb397498.js": "c421a07c2aa693e1d73828197868a5015a5feced",
+    "/bgg-app/index.html": "02cdaf71ee4e1b0336a939f7f896858388eab106",
+    "/bgg-app/main.4138813e5a69009f.js": "064729f486fc7dbe20058437439a20965c80aad4",
     "/bgg-app/manifest.webmanifest": "0408c159370a665c6b22880662f34de703e9e3f4",
     "/bgg-app/polyfills-core-js.f47eb60cc4ed4bde.js": "320bc5a48e53a1c00b5b0b52a9a6610781c6312f",
     "/bgg-app/polyfills-dom.bf542500b6fca113.js": "3fa333db66c8050f12e99d977f5098a6de8dd593",
     "/bgg-app/polyfills.566e0748c2fd0624.js": "1269663d88b7ce482cdd91c013424e55b566ac64",
-    "/bgg-app/runtime.24990a8504713e25.js": "9f2d9aaf0a0baee4ce68ca3fe1efb70c98ba0249",
+    "/bgg-app/runtime.425d17e5b28b8733.js": "aa48838fb55300c0b646a0c35993aab52959a632",
     "/bgg-app/styles.e61d73efeb43147b.css": "3df6397cdf453b10def79ca97aa20a0abb94c510",
     "/bgg-app/svg/accessibility-outline.svg": "92bc5fbc69bc5b55f75c5d29686d6f3b949857bd",
     "/bgg-app/svg/accessibility-sharp.svg": "0c6447c380f04b29bef7413d50d088dd4a5fd61c",
