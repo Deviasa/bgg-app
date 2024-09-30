@@ -1,21 +1,16 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button
-        fill="solid"
-        color="tertiary"
-        (click)="openGameSelectionModal(totalGameList)"
-      ><ion-icon name="shuffle-outline"></ion-icon></ion-button>
+      <ion-button fill="solid" color="tertiary" (click)="openGameSelectionModal(totalGameList)"
+        ><ion-icon name="shuffle-outline"></ion-icon
+      ></ion-button>
     </ion-buttons>
     <ion-title style="text-align: center">Board Game Geek App</ion-title>
     <ion-buttons slot="end">
-      <ion-button
-        fill="solid"
-        color="tertiary"
-        (click)="shareList()"
-      ><ion-icon name="share-social-outline"></ion-icon></ion-button>
+      <ion-button fill="solid" color="tertiary" (click)="shareList()"
+        ><ion-icon name="share-social-outline"></ion-icon
+      ></ion-button>
     </ion-buttons>
-
   </ion-toolbar>
 </ion-header>
 
@@ -28,18 +23,18 @@
   <div>
     <ion-grid>
       <ion-row>
-          <ion-input
-            type="text"
-            placeholder="Enter Username"
-            [clearInput]="true"
-            fill="solid"
-            [(ngModel)]="username"
-            name="username"
-            style="height: 100%"
-            enterkeyhint="send"
-            [class.error]="errorMessage"
-            (keyup.enter)="askForLogin(username)"
-          ></ion-input>
+        <ion-input
+          type="text"
+          placeholder="Enter Username"
+          [clearInput]="true"
+          fill="solid"
+          [(ngModel)]="username"
+          name="username"
+          style="height: 100%"
+          enterkeyhint="send"
+          [class.error]="errorMessage"
+          (keyup.enter)="askForLogin(username)"
+        ></ion-input>
       </ion-row>
     </ion-grid>
   </div>
@@ -58,9 +53,7 @@
       <ion-grid>
         <ion-row>
           <ion-col size="2" class="header-list"><ion-icon name="image-outline"></ion-icon></ion-col>
-          <ion-col class="header-list" size="5" (click)="sort('name')"
-            >Name</ion-col
-          >
+          <ion-col class="header-list" size="5" (click)="sort('name')">Name</ion-col>
           <ion-col class="header-list" id="min-player-icon"
             ><ion-icon
               (click)="sort('minplayers')"
@@ -83,11 +76,7 @@
             ></ion-icon
           ></ion-col>
           <ion-col class="header-list" id="max-playtime-icon"
-            ><ion-icon
-              (click)="sort('maxplayers')"
-              title="Maximal Playtime"
-              name="time"
-            ></ion-icon
+            ><ion-icon (click)="sort('maxplayers')" title="Maximal Playtime" name="time"></ion-icon
           ></ion-col>
           <ion-col class="header-list hideColumn" id="year-published-icon"
             ><ion-icon
@@ -97,11 +86,7 @@
             ></ion-icon
           ></ion-col>
           <ion-col class="header-list hideColumn" id="location">
-            <ion-icon
-              (click)="sort('inventorylocation')"
-              title="Location"
-              name="grid"
-            ></ion-icon>
+            <ion-icon (click)="sort('inventorylocation')" title="Location" name="grid"></ion-icon>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -113,16 +98,15 @@
       <ion-grid>
         <ion-row (click)="selectGame(game)">
           <ion-col style="margin-right: 10px" size="2">
-            <ion-thumbnail >
-              <img  alt="" src="{{game.thumbnail}}"/> </ion-thumbnail
+            <ion-thumbnail> <img alt="" src="{{game.thumbnail}}" /> </ion-thumbnail
           ></ion-col>
           <ion-col class="game-name" size="5">{{game.name}}</ion-col>
-          <ion-col >{{game.minplayers}}</ion-col>
-          <ion-col >{{game.maxplayers}}</ion-col>
-          <ion-col class="hideColumn" >{{game.minplaytime}}</ion-col>
-          <ion-col >{{game.maxplaytime}}</ion-col>
-          <ion-col class="hideColumn" >{{game.yearpublished}}</ion-col>
-          <ion-col class="hideColumn" >{{game.privateInfo?.$?.inventorylocation}}</ion-col>
+          <ion-col>{{game.minplayers}}</ion-col>
+          <ion-col>{{game.maxplayers}}</ion-col>
+          <ion-col class="hideColumn">{{game.minplaytime}}</ion-col>
+          <ion-col>{{game.maxplaytime}}</ion-col>
+          <ion-col class="hideColumn">{{game.yearpublished}}</ion-col>
+          <ion-col class="hideColumn">{{game.privateInfo?.$?.inventorylocation}}</ion-col>
         </ion-row>
       </ion-grid>
     </ion-item>

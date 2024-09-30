@@ -12,7 +12,7 @@ import { GameSelectionModalComponent } from './components/game-selection-modal/g
 import { ListPageRoutingModule } from './list-routing.module';
 import { ListPage } from './list.page';
 import { LoginComponent } from './components/login/login.component';
-import {GameDetailComponent} from "@models/app/components/game-detail/game-detail.component";
+import { GameDetailComponent } from '@models/app/components/game-detail/game-detail.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 
 @NgModule({
@@ -21,7 +21,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
     ListPage,
     SortPipe,
     LoginComponent,
-    GameDetailComponent
+    GameDetailComponent,
   ],
   imports: [
     CommonModule,
@@ -38,13 +38,10 @@ import { ServiceWorkerModule } from '@angular/service-worker';
       enabled: !isDevMode(),
       // Register the ServiceWorker as soon as the application is stable
       // or after 30 seconds (whichever comes first).
-      registrationStrategy: 'registerWhenStable:30000'
+      registrationStrategy: 'registerWhenStable:30000',
     }),
   ],
-  providers: [
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    HttpClient,
-  ],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, HttpClient],
   bootstrap: [ListPage],
 })
 export class ListPageModule {}

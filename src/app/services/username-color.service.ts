@@ -38,26 +38,17 @@ export class UsernameColorService {
     usernameColors: { username: string; color: string }[],
   ): string {
     this.usernameColors = usernameColors || this.usernameColors;
-    const userColor = this.usernameColors.find(
-      (userColor) => userColor.username === username,
-    );
+    const userColor = this.usernameColors.find((userColor) => userColor.username === username);
     return userColor ? userColor.color : '#fff';
   }
 
   // Assign color to a username
   setColorForUsername(username: string): { username: string; color: string }[] {
-    console.log(this.usernameColors)
-    if (
-      !this.usernameColors.some((userColor) => userColor.username === username)
-    ) {
-      const usedColors = this.usernameColors.map(
-        (userColor) => userColor.color,
-      );
-      const availableColors = this.colors.filter(
-        (color) => !usedColors.includes(color),
-      );
-      const color =
-        availableColors.length > 0 ? availableColors[0] : this.colors[0];
+    console.log(this.usernameColors);
+    if (!this.usernameColors.some((userColor) => userColor.username === username)) {
+      const usedColors = this.usernameColors.map((userColor) => userColor.color);
+      const availableColors = this.colors.filter((color) => !usedColors.includes(color));
+      const color = availableColors.length > 0 ? availableColors[0] : this.colors[0];
       this.usernameColors.push({ username, color });
     }
 
@@ -65,6 +56,8 @@ export class UsernameColorService {
   }
 
   removeUsername(username: string) {
-    this.usernameColors = this.usernameColors.filter(userColor => userColor.username !== username);
+    this.usernameColors = this.usernameColors.filter(
+      (userColor) => userColor.username !== username,
+    );
   }
 }
