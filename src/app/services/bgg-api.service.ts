@@ -4,11 +4,15 @@ import { switchMap } from 'rxjs/operators';
 import { BggResponse, IBggResponse } from './models/bgg-response.model';
 import * as xml2js from 'xml2js';
 import {environment} from "@models/environments/environment";
+import {ToastService} from "@models/app/services/toast.service";
+import {BGGThing} from "@models/app/interfaces/thing.interface";
+import {parseString, parseStringPromise} from "xml2js";
 @Injectable({
   providedIn: 'root',
 })
 export class BggApiService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,
+  private toastService: ToastService) {}
 
   headers = new HttpHeaders().set('Access-Control-Allow-Origin', 'https://deviasa.github.io/bgg-app');
 
@@ -24,7 +28,7 @@ export class BggApiService {
             withCredentials: true,
           },
         )
-        .pipe(switchMap(async (xml) => await this.parseXmlToJson(xml)));
+        .pipe(switchMap(async (xml) => await this.parseXmlToJson(xml, username, p)));
     } else {
       return this.http
         .get(
@@ -33,32 +37,52 @@ export class BggApiService {
             responseType: 'text' as 'text',
           },
         )
-        .pipe(switchMap(async (xml) => await this.parseXmlToJson(xml)));
+        .pipe(switchMap(async (xml) => await this.parseXmlToJson(xml, username, p)));
     }
 
   }
 
-  async parseXmlToJson(xml: string) {
+  getThingInformations(thingId: number) {
+    // @ts-ignore
+    return this.http.get(`https://bgg-connector-production.up.railway.app/thing?id=${thingId}&stats=1`, { responseType: 'text' }).pipe(switchMap(response => {
+      let result: BGGThing;
+      parseString(response, { explicitArray: false }, (err, jsonResult) => {
+        if (err) {
+          throw new Error('Error parsing XML');
+        } else {
+
+          console.log(jsonResult)
+          console.log(result);
+          result.item = jsonResult.items.item;
+          //result = jsonResult.items;
+          return result;
+        }
+      });
+
+    }));
+  }
+
+  async parseXmlToJson(xml: string, username: string, p: boolean) {
     if (
-      xml ===
-      `<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<message>
-\tYour request for this collection has been accepted and will be processed.  Please try again later for access.
-</message>`
+      xml.includes('Your request for this collection has been accepted and will be processed')
     ) {
-      alert('Request not ready');
+      this.toastService.presentToast('Your request for this collection has been accepted and will be processed', 'top')
+      return null;
+    } else {
+      const parsedData = await xml2js.parseStringPromise(xml, {
+        explicitArray: false,
+      });
+      if (!parsedData) {
+        return null; // Not found
+      }
+      if (parsedData.errors) {
+        return parsedData.errors.error.message;
+      }
+      const data = parsedData as IBggResponse;
+      return new BggResponse(data);
     }
-    const parsedData = await xml2js.parseStringPromise(xml, {
-      explicitArray: false,
-    });
-    if (!parsedData) {
-      return null; // Not found
     }
-    if (parsedData.errors) {
-      return parsedData.errors.error.message;
-    }
-    const data = parsedData as IBggResponse;
-    console.log(data);
-    return new BggResponse(data);
-  }
+
+
+
 }

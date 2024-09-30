@@ -13,15 +13,19 @@ export class GameSelectionModalComponent {
   @Input()
   totalGameList: BggResponse = { items: [], total: 0 };
   numberOfPlayers: number = 0;
+  playTime: number = 60;
+  rating: number = 5;
   selectedGame: BggGame | undefined;
   listPage: ListPage;
   constructor(private modalController: ModalController) {}
 
-  searchGame(numberOfPlayers: number) {
+  searchGame(numberOfPlayers: number, playTime:number) {
     const suitableGames = this.totalGameList.items.filter(
       (game) =>
         numberOfPlayers >= game.minplayers &&
-        numberOfPlayers <= game.maxplayers,
+        numberOfPlayers <= game.maxplayers &&
+        playTime <= game.maxplaytime &&
+        playTime >= game.minplaytime
     );
 
     this.selectedGame =

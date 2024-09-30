@@ -121,7 +121,6 @@ export class BggGame {
   public privateInfo?: privateinfo;
 
   constructor(data: IBggGame) {
-    console.log(data);
     this.collectionId = Number.parseInt(data.$.collid);
     this.objectId = Number.parseInt(data.$.objectid);
     this.objectType = data.$.objecttype;
