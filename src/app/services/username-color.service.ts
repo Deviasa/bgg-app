@@ -46,6 +46,7 @@ export class UsernameColorService {
 
   // Assign color to a username
   setColorForUsername(username: string): { username: string; color: string }[] {
+    console.log(this.usernameColors)
     if (
       !this.usernameColors.some((userColor) => userColor.username === username)
     ) {
@@ -61,5 +62,9 @@ export class UsernameColorService {
     }
 
     return this.usernameColors;
+  }
+
+  removeUsername(username: string) {
+    this.usernameColors = this.usernameColors.filter(userColor => userColor.username !== username);
   }
 }

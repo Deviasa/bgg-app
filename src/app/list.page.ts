@@ -14,6 +14,7 @@ import {BggGame} from "@models/app/services/models/bgg-game.model";
 import {GameDetailComponent} from "@models/app/components/game-detail/game-detail.component";
 import {LoadingService} from "@models/app/services/loading.service";
 import { Share } from "@capacitor/share";
+import {ToastService} from "@models/app/services/toast.service";
 
 @Component({
   selector: 'app-root',
@@ -46,7 +47,8 @@ export class ListPage implements OnInit {
     private ls: LoginService,
     private alertController: AlertController,
     private modalController: ModalController,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private toastService: ToastService
   ) {}
 
   // Lifecycle hook to initialize the component
@@ -154,16 +156,19 @@ export class ListPage implements OnInit {
           if (res && res.total !== undefined) {
             this.errorMessage = null;
             if (res.total === 0) {
-              this.showAlert('No games found for user.');
+              this.toastService.presentToast('No games found for user.', 'top')
+              l.dismiss();
               return;
             }
             // Check for color limits and duplicates
             if (this.getLocalStorageStatus().length >= this.usernameColorService.colors.length) {
-              this.showAlert('Maximum number of collections reached.');
+              this.toastService.presentToast('Maximum number of collections reached.', 'top')
+              l.dismiss()
               return;
             }
             if (this.getLocalStorageStatus().find((user) => user.username === username)) {
-              this.showAlert(`Collection for user ${username} already exists.`);
+              this.toastService.presentToast(`Collection for user ${username} already exists.`, 'top')
+              l.dismiss();
               return;
             }
             // Add new user collection to the game list
@@ -256,6 +261,8 @@ export class ListPage implements OnInit {
     this.usernameColors = this.usernameColors.filter(
       (user) => user.username !== username,
     );
+    this.usernameColorService.removeUsername(username);
+    console.log(this.usernameColors)
   }
 
   // Retrieve color associated with a specific username
@@ -270,6 +277,7 @@ export class ListPage implements OnInit {
   private setColorForUsername(username: string) {
     this.usernameColors =
       this.usernameColorService.setColorForUsername(username);
+    console.log(this.usernameColors)
   }
 
   // Get the status of usernames and their colors from local storage
@@ -357,7 +365,7 @@ export class ListPage implements OnInit {
     await askAlert.present();
   }
 
-  clickGameRow(game: BggGame) {
+  selectGame(game: BggGame) {
     this.showGameDetail(game).then(() => {})
   }
 

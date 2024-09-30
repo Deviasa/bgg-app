@@ -1,49 +1,48 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Board Game Geek App</ion-title>
+    <ion-buttons slot="start">
+      <ion-button
+        fill="solid"
+        color="tertiary"
+        (click)="openGameSelectionModal(totalGameList)"
+      ><ion-icon name="shuffle-outline"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title style="text-align: center">Board Game Geek App</ion-title>
+    <ion-buttons slot="end">
+      <ion-button
+        fill="solid"
+        color="tertiary"
+        (click)="shareList()"
+      ><ion-icon name="share-social-outline"></ion-icon></ion-button>
+    </ion-buttons>
+
   </ion-toolbar>
 </ion-header>
+
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">List</ion-title>
     </ion-toolbar>
   </ion-header>
-  <form (keyup.enter)="askForLogin(username)">
-    <ion-input
-      type="text"
-      label=" Username:"
-      placeholder="Enter Username"
-      [clearInput]="true"
-      fill="solid"
-      [(ngModel)]="username"
-      name="username"
-      [class.error]="errorMessage"
-    ></ion-input>
-    <ion-toolbar>
-      <ion-buttons slot="start">
-        <ion-button fill="solid" (click)="askForLogin(username)"
-          >Load Game List</ion-button
-        ></ion-buttons
-      >
-      <ion-buttons slot="end">
-        <ion-button
-          fill="solid"
-          color="tertiary"
-          (click)="shareList()"
-        >
-          <ion-icon name="share-social-outline"></ion-icon>
-        </ion-button>
-        <ion-button
-          fill="solid"
-          color="tertiary"
-          (click)="openGameSelectionModal(totalGameList)"
-          >Random Game</ion-button
-        >
-      </ion-buttons>
-    </ion-toolbar>
-    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
-  </form>
+  <div>
+    <ion-grid>
+      <ion-row>
+          <ion-input
+            type="text"
+            placeholder="Enter Username"
+            [clearInput]="true"
+            fill="solid"
+            [(ngModel)]="username"
+            name="username"
+            style="height: 100%"
+            enterkeyhint="send"
+            [class.error]="errorMessage"
+            (keyup.enter)="askForLogin(username)"
+          ></ion-input>
+      </ion-row>
+    </ion-grid>
+  </div>
   <div style="display: flex; flex-direction: row; gap: 10px">
     <div *ngFor="let user of usernameColors">
       <ion-button
@@ -55,11 +54,10 @@
     </div>
   </div>
   <ion-list>
-    <ion-list-header> </ion-list-header>
     <ion-item>
       <ion-grid>
         <ion-row>
-          <ion-col size="2" class="header-list"></ion-col>
+          <ion-col size="2" class="header-list"><ion-icon name="image-outline"></ion-icon></ion-col>
           <ion-col class="header-list" size="5" (click)="sort('name')"
             >Name</ion-col
           >
@@ -113,7 +111,7 @@
       [ngStyle]="{ '--ion-item-background': getColorForUsername(game.user) }"
     >
       <ion-grid>
-        <ion-row (click)="clickGameRow(game)">
+        <ion-row (click)="selectGame(game)">
           <ion-col style="margin-right: 10px" size="2">
             <ion-thumbnail >
               <img  alt="" src="{{game.thumbnail}}"/> </ion-thumbnail

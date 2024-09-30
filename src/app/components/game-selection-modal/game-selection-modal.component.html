@@ -15,13 +15,27 @@
       type="number"
     ></ion-input>
   </ion-item>
+  <ion-item>
+    <ion-input
+      label="Playtime (min)"
+      [(ngModel)]="playTime"
+      type="number"
+    ></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-input
+      label="min Rating (0-10)"
+      [(ngModel)]="rating"
+      type="number"
+    ></ion-input>
+  </ion-item>
 
-  <ion-button expand="full" (click)="searchGame(numberOfPlayers)"
+  <ion-button expand="full" (click)="searchGame(numberOfPlayers, playTime)"
     >Search</ion-button
   >
 
   <div *ngIf="selectedGame" class="center-content">
     <h2>{{ selectedGame.name }}</h2>
-    <img [src]="selectedGame.thumbnail" (click)="listPage.clickGameRow(selectedGame)" alt="{{ selectedGame.name }}" />
+    <img [src]="selectedGame.thumbnail" (click)="listPage.selectGame(selectedGame)" alt="{{ selectedGame.name }}" />
   </div>
 </ion-content>
