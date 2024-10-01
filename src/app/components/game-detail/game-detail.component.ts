@@ -22,7 +22,7 @@ export class GameDetailComponent implements OnInit {
   ngOnInit() {
     console.log(this.game);
     this.bggApi.getThingInformation(this.game.objectId).subscribe((res) => {
-      //this.gameDetail = res;
+      this.gameDetail = res;
     });
   }
 

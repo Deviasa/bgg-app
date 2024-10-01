@@ -5,33 +5,17 @@ import { Injectable } from '@angular/core';
 })
 export class UsernameColorService {
   public colors: string[] = [
-    '#AAAA00',
-    '#FFAABB',
-    '#44BB99',
-    '#EE8866',
-    '#BBCC33',
-    '#99DDFF',
-    '#EEDD88',
-    '#77AADD',
-    '#FFDD44',
-    '#66CCEE',
-    '#CC99CC',
-    '#FFAA77',
-    '#88CCAA',
-    '#FFCC99',
-    '#99CCFF',
-    '#FF6699',
-    '#66FFCC',
-    '#FF9966',
-    '#6699FF',
-    '#CCFF99',
-    '#FF99CC',
-    '#66CC99',
-    '#FFCC66',
-    '#99FFCC',
+    this.getCSSVariable('--ion-color-user1'),
+    this.getCSSVariable('--ion-color-user2'),
+    this.getCSSVariable('--ion-color-user3'),
+    this.getCSSVariable('--ion-color-user4'),
+    this.getCSSVariable('--ion-color-user5'),
   ];
   private usernameColors: { username: string; color: string }[] = [];
 
+  private getCSSVariable(variableName: string): string {
+    return getComputedStyle(document.documentElement).getPropertyValue(variableName).trim();
+  }
   // Get color associated with a specific username
   getColorForUsername(
     username: string,

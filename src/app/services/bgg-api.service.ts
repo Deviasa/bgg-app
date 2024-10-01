@@ -50,6 +50,8 @@ export class BggApiService {
         responseType: 'text',
       })
       .pipe(
+        // eslint-disable-next-line
+        // @ts-ignore
         switchMap((response) => {
           let result: BGGThing;
           parseString(response, { explicitArray: false }, (err, jsonResult) => {

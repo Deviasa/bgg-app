@@ -4,11 +4,13 @@
     "@ionic/angular/standalone"
   ],
   "cSpell.words": [
+    "apng",
     "bggpassword",
     "cordovasqlitedriver",
     "Deviasa",
     "devkit",
     "inventorylocation",
+    "ionicons",
     "jasminewd",
     "Leviasa",
     "localforage",
@@ -22,6 +24,7 @@
     "termsofuse",
     "totalitems",
     "tseslint",
+    "webp",
     "yearpublished"
   ]
 }

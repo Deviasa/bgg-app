@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { ListPage } from '@models/app/list.page';
 import { BggGame } from 'src/app/services/models/bgg-game.model';
 import { BggResponse } from 'src/app/services/models/bgg-response.model';
-import { ListPage } from '@models/app/list.page';
 
 @Component({
   selector: 'app-game-selection-modal',

@@ -1,13 +1,11 @@
-<h1>Login</h1>
-
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button color="medium" (click)="cancel()">Cancel</ion-button>
+      <ion-button color="medium" (click)="cancel()" aria-label="Cancel Login">Cancel</ion-button>
     </ion-buttons>
-    <ion-title>Welcome</ion-title>
+    <ion-title>Login</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="confirm()" [strong]="true">Login</ion-button>
+      <ion-button (click)="confirm()" [strong]="true" aria-label="Confirm Login">Login</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>

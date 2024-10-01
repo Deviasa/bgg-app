@@ -1,20 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
+import { Share } from '@capacitor/share';
+import { AlertController, IonContent, ModalController } from '@ionic/angular';
+import { GameDetailComponent } from '@models/app/components/game-detail/game-detail.component';
+import { LoadingService } from '@models/app/services/loading.service';
+import { BggGame } from '@models/app/services/models/bgg-game.model';
+import { ToastService } from '@models/app/services/toast.service';
 import { filter } from 'rxjs/operators';
+import { LoginComponent } from './components/login/login.component';
 import { AlertService } from './services/alert.service';
 import { BggApiService } from './services/bgg-api.service';
+import { LoginService } from './services/login.service';
 import { ModalService } from './services/modal.service';
 import { BggResponse } from './services/models/bgg-response.model';
 import { BggStorageService } from './services/storage.service';
 import { UsernameColorService } from './services/username-color.service';
-import { LoginComponent } from './components/login/login.component';
-import { LoginService } from './services/login.service';
-import { AlertController, ModalController } from '@ionic/angular';
-import { BggGame } from '@models/app/services/models/bgg-game.model';
-import { GameDetailComponent } from '@models/app/components/game-detail/game-detail.component';
-import { LoadingService } from '@models/app/services/loading.service';
-import { Share } from '@capacitor/share';
-import { ToastService } from '@models/app/services/toast.service';
 
 @Component({
   selector: 'app-root',
@@ -22,6 +22,7 @@ import { ToastService } from '@models/app/services/toast.service';
   styleUrls: ['./list.page.scss'],
 })
 export class ListPage implements OnInit {
+  @ViewChild(IonContent) ionContent: IonContent;
   // State variables for managing user data and game lists
   username: string = '';
   usernames: string[] = [];
@@ -363,5 +364,26 @@ export class ListPage implements OnInit {
     });
 
     await gameModal.present();
+  }
+
+  scrollContent(scroll) {
+    if (scroll === 'top') {
+      this.ionContent.scrollToTop(300);
+    } else {
+      this.ionContent.scrollToBottom(300);
+    }
+  }
+  public lastScrollTop = 0;
+  private readonly SCROLL_THRESHOLD = 100;
+
+  onScroll(event): void {
+    const scrollButton = document.getElementById('scrollBtn');
+    if (event.detail.scrollTop > this.SCROLL_THRESHOLD) {
+      scrollButton.style.display = 'block';
+    } else {
+      scrollButton.style.display = 'none';
+    }
+
+    this.lastScrollTop = event.detail.scrollTop;
   }
 }

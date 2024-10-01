@@ -26,7 +26,12 @@
 @import '@ionic/angular/css/flex-utils.css';
 
 * {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Abel', sans-serif;
+  font-weight: 400;
+  font-size: 103%;
+}
+body {
+  min-width: 350px;
 }
 
 ion-alert.warning-alert {
@@ -35,4 +40,8 @@ ion-alert.warning-alert {
 
 ion-alert.alert-button.button-alert-warning {
   background-color: black;
+}
+
+ion-header {
+  background-color: var(--ion-toolbar-background, var(--ion-background-color, #fff));
 }

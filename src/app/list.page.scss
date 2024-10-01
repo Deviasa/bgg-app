@@ -1,5 +1,12 @@
 ion-col {
+  align-content: center;
   text-align: center;
+  align-items: center;
+}
+
+.buttonRound {
+  --background: var(--ion-color-button1);
+  --color: var(--ion-color-button1-contrast);
 }
 
 .game-name {
@@ -8,18 +15,14 @@ ion-col {
 
 .header-list {
   font-weight: bold;
-}
-
-ion-thumbnail {
-  --size: 40px;
-  --border-radius: 20px;
+  margin: auto;
+  width: 50%;
 }
 
 ion-popover {
   --backdrop-opacity: 0;
   font-size: small;
 }
-
 ion-thumbnail {
   --size: 50px;
   --border-radius: 5px;
@@ -42,10 +45,20 @@ ion-input.error {
 ion-item {
   --highlight-color-focused: none;
 }
-ion-input {
-  &:focus-within {
-    --highlight-color: black;
-  }
+
+ion-row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+ion-col.header-list,
+ion-col.game-name {
+  flex: 1 1 0;
+  max-width: 100%;
+}
+
+.item {
+  margin: 0;
 }
 
 .center-text {
@@ -62,6 +75,35 @@ ion-input {
   gap: 10px;
 }
 
+.align-center {
+  align-items: center;
+}
+
 .game-thumbnail {
-  margin-right: 10px;
+  margin-right: 0px;
+}
+
+.sort-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: white;
+  box-shadow: none;
+}
+
+ion-input.has-focus,
+button:focus-visible,
+ion-button.ion-focused,
+ion-segment-button.ion-focused,
+ion-radio.ion-focused,
+ion-select.ion-focused,
+ion-fab.ion-focused,
+ion-searchbar.ion-focused,
+ion-checkbox.ion-focused,
+ion-toggle.ion-focused,
+ion-range.ion-focused,
+ion-datetime.ion-focused,
+ion-accordion.ion-focused,
+ion-textarea.ion-focused {
+  outline: 3px solid var(--ion-color-highlight);
 }
