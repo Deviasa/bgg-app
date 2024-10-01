@@ -1,130 +1,164 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-button
-        fill="solid"
-        color="tertiary"
-        (click)="openGameSelectionModal(totalGameList)"
-      ><ion-icon name="shuffle-outline"></ion-icon></ion-button>
-    </ion-buttons>
-    <ion-title style="text-align: center">Board Game Geek App</ion-title>
-    <ion-buttons slot="end">
-      <ion-button
-        fill="solid"
-        color="tertiary"
-        (click)="shareList()"
-      ><ion-icon name="share-social-outline"></ion-icon></ion-button>
-    </ion-buttons>
-
-  </ion-toolbar>
-</ion-header>
-
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
+<ion-content lass="ion-padding" [scrollEvents]="true" (ionScroll)="onScroll($event)">
+  <ion-header class="ion-no-border">
     <ion-toolbar>
-      <ion-title size="large">List</ion-title>
+      <ion-title class="center-text">Board Game Geek App</ion-title>
+    </ion-toolbar>
+
+    <ion-toolbar>
+      <ion-searchbar
+        color="medium"
+        enterkeyhint="enter"
+        inputmode="text"
+        maxlength="50"
+        show-clear="always"
+        [(ngModel)]="username"
+        (keyup.enter)="askForLogin($event)"
+        placeholder="Enter username"
+        aria-label="Enter username"
+        title="Enter username"
+      ></ion-searchbar>
+      <ion-buttons slot="end">
+        <ion-button
+          shape="round"
+          class="buttonRound"
+          (click)="openGameSelectionModal(totalGameList)"
+          label="Random Game"
+          title="Get Random Game"
+          aria-label="Get Random Game"
+        >
+          <ion-icon slot="icon-only" name="shuffle-outline"></ion-icon> </ion-button
+      ></ion-buttons>
+    </ion-toolbar>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button
+          shape="round"
+          class="buttonRound"
+          size="small"
+          (click)="shareList()"
+          aria-label="Share List"
+          label="Share List"
+          title="Share List"
+        >
+          <ion-icon slot="icon-only" name="share-social-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-buttons *ngFor="let user of usernameColors" class="ion-padding-horizontal">
+        <ion-button
+          size="small"
+          style="font-size: 80%"
+          (click)="removeUser(user.username)"
+          [ngStyle]="{ '--background': getColorForUsername(user.username), 'color': 'black'}"
+          aria-label="Remove {{ user.username }}"
+          title="Remove {{ user.username }}"
+        >
+          {{ user.username }} x
+        </ion-button>
+      </ion-buttons>
     </ion-toolbar>
   </ion-header>
-  <div>
-    <ion-grid>
-      <ion-row>
-          <ion-input
-            type="text"
-            placeholder="Enter Username"
-            [clearInput]="true"
-            fill="solid"
-            [(ngModel)]="username"
-            name="username"
-            style="height: 100%"
-            enterkeyhint="send"
-            [class.error]="errorMessage"
-            (keyup.enter)="askForLogin(username)"
-          ></ion-input>
-      </ion-row>
-    </ion-grid>
-  </div>
-  <div style="display: flex; flex-direction: row; gap: 10px">
-    <div *ngFor="let user of usernameColors">
-      <ion-button
-        size="small"
-        (click)="removeUser(user.username)"
-        [ngStyle]="{ '--background': getColorForUsername(user.username), 'color': 'black'}"
-        >{{ user.username }} x</ion-button
-      >
-    </div>
-  </div>
-  <ion-list>
-    <ion-item>
+
+  <ion-header class="sort-header">
+    <ion-toolbar style="--min-height: min-content">
       <ion-grid>
-        <ion-row>
-          <ion-col size="2" class="header-list"><ion-icon name="image-outline"></ion-icon></ion-col>
-          <ion-col class="header-list" size="5" (click)="sort('name')"
-            >Name</ion-col
-          >
-          <ion-col class="header-list" id="min-player-icon"
-            ><ion-icon
+        <ion-row style="min-height: auto">
+          <ion-col class="header-list">
+            <ion-icon
+              name="image-outline"
+              aria-label="Game Image"
+              style="padding-right: 14.25px; padding-left: 14.25px"
+            ></ion-icon>
+          </ion-col>
+          <ion-col class="header-list" size="5" (click)="sort('name')" aria-label="Sort by Name">
+            Name
+          </ion-col>
+          <ion-col class="header-list" id="min-player-icon">
+            <ion-icon
               (click)="sort('minplayers')"
               title="Minimal Player"
               name="person-outline"
-            ></ion-icon
-          ></ion-col>
-          <ion-col class="header-list" id="max-player-icon"
-            ><ion-icon
+              aria-label="Sort by Minimal Player"
+            ></ion-icon>
+          </ion-col>
+          <ion-col class="header-list" id="max-player-icon">
+            <ion-icon
               (click)="sort('maxplayers')"
               title="Maximal Player"
               name="people-outline"
+              aria-label="Sort by Maximal Player"
             ></ion-icon>
           </ion-col>
-          <ion-col class="header-list hideColumn" id="min-playtime-icon"
-            ><ion-icon
+          <ion-col class="hideColumn" id="min-playtime-icon">
+            <ion-icon
               (click)="sort('minplaytime')"
               title="Minimal Playtime"
               name="time-outline"
-            ></ion-icon
-          ></ion-col>
-          <ion-col class="header-list" id="max-playtime-icon"
-            ><ion-icon
+              aria-label="Sort by Minimal Playtime"
+            ></ion-icon>
+          </ion-col>
+          <ion-col class="header-list" id="max-playtime-icon">
+            <ion-icon
               (click)="sort('maxplayers')"
               title="Maximal Playtime"
               name="time"
-            ></ion-icon
-          ></ion-col>
-          <ion-col class="header-list hideColumn" id="year-published-icon"
-            ><ion-icon
+              aria-label="Sort by Maximal Playtime"
+            ></ion-icon>
+          </ion-col>
+          <ion-col class="hideColumn" id="year-published-icon">
+            <ion-icon
               (click)="sort('yearpublished')"
               title="Year Published"
               name="calendar-outline"
-            ></ion-icon
-          ></ion-col>
-          <ion-col class="header-list hideColumn" id="location">
+              aria-label="Sort by Year Published"
+            ></ion-icon>
+          </ion-col>
+          <ion-col id="location">
             <ion-icon
               (click)="sort('inventorylocation')"
               title="Location"
               name="grid"
+              aria-label="Sort by Location"
             ></ion-icon>
           </ion-col>
         </ion-row>
       </ion-grid>
-    </ion-item>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-list>
     <ion-item
+      style="--padding-start: 0px; --inner-padding-end: 0px"
+      class="align-center"
       *ngFor="let game of totalGameList?.items | sort: {property: column, order: order}"
       [ngStyle]="{ '--ion-item-background': getColorForUsername(game.user) }"
     >
       <ion-grid>
         <ion-row (click)="selectGame(game)">
-          <ion-col style="margin-right: 10px" size="2">
-            <ion-thumbnail >
-              <img  alt="" src="{{game.thumbnail}}"/> </ion-thumbnail
-          ></ion-col>
+          <ion-col class="game-thumbnail">
+            <ion-thumbnail>
+              <img alt="{{game.name}} thumbnail" src="{{game.thumbnail}}" />
+            </ion-thumbnail>
+          </ion-col>
           <ion-col class="game-name" size="5">{{game.name}}</ion-col>
-          <ion-col >{{game.minplayers}}</ion-col>
-          <ion-col >{{game.maxplayers}}</ion-col>
-          <ion-col class="hideColumn" >{{game.minplaytime}}</ion-col>
-          <ion-col >{{game.maxplaytime}}</ion-col>
-          <ion-col class="hideColumn" >{{game.yearpublished}}</ion-col>
-          <ion-col class="hideColumn" >{{game.privateInfo?.$?.inventorylocation}}</ion-col>
+          <ion-col>{{game.minplayers}}</ion-col>
+          <ion-col>{{game.maxplayers}}</ion-col>
+          <ion-col class="hideColumn">{{game.minplaytime}}</ion-col>
+          <ion-col>{{game.maxplaytime}}</ion-col>
+          <ion-col class="hideColumn">{{game.yearpublished}}</ion-col>
+          <ion-col>{{game.privateInfo?.$?.inventorylocation}}</ion-col>
         </ion-row>
       </ion-grid>
     </ion-item>
   </ion-list>
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="center">
+    <ion-fab-button
+      id="scrollBtn"
+      (click)="scrollContent('top')"
+      size="small"
+      style="--background: var(--ion-text-color); --color: var(--ion-color-button3); display: none"
+    >
+      <ion-icon style="font-size: 34px" name="arrow-up-outline" title="Go to top"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

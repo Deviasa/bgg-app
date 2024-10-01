@@ -4,7 +4,7 @@
 
 export const environment = {
   production: true,
-  bggLink: 'https://bgg-connector-production.up.railway.app/collection'
+  bggLink: 'https://bgg-connector-production.up.railway.app/collection',
 };
 
 /*

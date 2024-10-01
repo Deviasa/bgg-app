@@ -1,35 +1,32 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {BggGame} from "@models/app/services/models/bgg-game.model";
-import {ModalController} from "@ionic/angular";
-import {BggApiService} from "@models/app/services/bgg-api.service";
-import {BGGThing} from "@models/app/interfaces/thing.interface";
+import { Component, Input, OnInit } from '@angular/core';
+import { ModalController } from '@ionic/angular';
+import { BGGThing } from '@models/app/interfaces/thing.interface';
+import { BggApiService } from '@models/app/services/bgg-api.service';
+import { BggGame } from '@models/app/services/models/bgg-game.model';
 
 @Component({
   selector: 'app-game-detail',
   templateUrl: './game-detail.component.html',
   styleUrls: ['./game-detail.component.scss'],
 })
-export class GameDetailComponent  implements OnInit {
-
+export class GameDetailComponent implements OnInit {
   @Input('game') game: BggGame;
 
-  gameDatail: BGGThing;
+  gameDetail: BGGThing;
 
   constructor(
     private modalCtrl: ModalController,
-    private bggApi: BggApiService
-  ) { }
+    private bggApi: BggApiService,
+  ) {}
 
   ngOnInit() {
     console.log(this.game);
-    this.bggApi.getThingInformations(this.game.objectId).subscribe((res) => {
-      //this.gameDatail = res;
-    })
+    this.bggApi.getThingInformation(this.game.objectId).subscribe((res) => {
+      this.gameDetail = res;
+    });
   }
 
   cancel() {
     this.modalCtrl.dismiss();
-
   }
-
 }

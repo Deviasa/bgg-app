@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { ListPage } from '@models/app/list.page';
 import { BggGame } from 'src/app/services/models/bgg-game.model';
 import { BggResponse } from 'src/app/services/models/bgg-response.model';
-import {ListPage} from "@models/app/list.page";
 
 @Component({
   selector: 'app-game-selection-modal',
@@ -19,17 +19,16 @@ export class GameSelectionModalComponent {
   listPage: ListPage;
   constructor(private modalController: ModalController) {}
 
-  searchGame(numberOfPlayers: number, playTime:number) {
+  searchGame(numberOfPlayers: number, playTime: number) {
     const suitableGames = this.totalGameList.items.filter(
       (game) =>
         numberOfPlayers >= game.minplayers &&
         numberOfPlayers <= game.maxplayers &&
         playTime <= game.maxplaytime &&
-        playTime >= game.minplaytime
+        playTime >= game.minplaytime,
     );
 
-    this.selectedGame =
-      suitableGames[Math.floor(Math.random() * suitableGames.length)];
+    this.selectedGame = suitableGames[Math.floor(Math.random() * suitableGames.length)];
   }
 
   closeModal() {

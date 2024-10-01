@@ -1,20 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
+import { Share } from '@capacitor/share';
+import { AlertController, IonContent, ModalController } from '@ionic/angular';
+import { GameDetailComponent } from '@models/app/components/game-detail/game-detail.component';
+import { LoadingService } from '@models/app/services/loading.service';
+import { BggGame } from '@models/app/services/models/bgg-game.model';
+import { ToastService } from '@models/app/services/toast.service';
 import { filter } from 'rxjs/operators';
+import { LoginComponent } from './components/login/login.component';
 import { AlertService } from './services/alert.service';
 import { BggApiService } from './services/bgg-api.service';
+import { LoginService } from './services/login.service';
 import { ModalService } from './services/modal.service';
 import { BggResponse } from './services/models/bgg-response.model';
 import { BggStorageService } from './services/storage.service';
 import { UsernameColorService } from './services/username-color.service';
-import { LoginComponent } from './components/login/login.component';
-import { LoginService } from './services/login.service';
-import { AlertController, ModalController } from '@ionic/angular';
-import {BggGame} from "@models/app/services/models/bgg-game.model";
-import {GameDetailComponent} from "@models/app/components/game-detail/game-detail.component";
-import {LoadingService} from "@models/app/services/loading.service";
-import { Share } from "@capacitor/share";
-import {ToastService} from "@models/app/services/toast.service";
 
 @Component({
   selector: 'app-root',
@@ -22,6 +22,7 @@ import {ToastService} from "@models/app/services/toast.service";
   styleUrls: ['./list.page.scss'],
 })
 export class ListPage implements OnInit {
+  @ViewChild(IonContent) ionContent: IonContent;
   // State variables for managing user data and game lists
   username: string = '';
   usernames: string[] = [];
@@ -48,7 +49,7 @@ export class ListPage implements OnInit {
     private alertController: AlertController,
     private modalController: ModalController,
     private loadingService: LoadingService,
-    private toastService: ToastService
+    private toastService: ToastService,
   ) {}
 
   // Lifecycle hook to initialize the component
@@ -80,7 +81,7 @@ export class ListPage implements OnInit {
     const usernamesPart = queryParams.get('username');
     if (usernamesPart) {
       this.usernames = usernamesPart.split(',');
-      console.log(this.usernames)
+      console.log(this.usernames);
       this.mergeAndReloadUsernames();
     }
   }
@@ -117,17 +118,12 @@ export class ListPage implements OnInit {
   private loadStoredUsers(username: string) {
     const key = Object.keys(localStorage).find((key) => key.endsWith(username));
     if (key) {
-      const collectionWithUser = JSON.parse(
-        localStorage.getItem(key) as string,
-      );
-      const existingGameIds = new Set(
-        this.totalGameList.items.map((item) => item.collectionId),
-      );
+      const collectionWithUser = JSON.parse(localStorage.getItem(key) as string);
+      const existingGameIds = new Set(this.totalGameList.items.map((item) => item.collectionId));
 
       // Filter out games already in the total list
       const newItems = collectionWithUser.items.filter(
-        (item: { collectionId: number }) =>
-          !existingGameIds.has(item.collectionId),
+        (item: { collectionId: number }) => !existingGameIds.has(item.collectionId),
       );
 
       // Update the total game list with new items
@@ -156,18 +152,21 @@ export class ListPage implements OnInit {
           if (res && res.total !== undefined) {
             this.errorMessage = null;
             if (res.total === 0) {
-              this.toastService.presentToast('No games found for user.', 'top')
+              this.toastService.presentToast('No games found for user.', 'top');
               l.dismiss();
               return;
             }
             // Check for color limits and duplicates
             if (this.getLocalStorageStatus().length >= this.usernameColorService.colors.length) {
-              this.toastService.presentToast('Maximum number of collections reached.', 'top')
-              l.dismiss()
+              this.toastService.presentToast('Maximum number of collections reached.', 'top');
+              l.dismiss();
               return;
             }
             if (this.getLocalStorageStatus().find((user) => user.username === username)) {
-              this.toastService.presentToast(`Collection for user ${username} already exists.`, 'top')
+              this.toastService.presentToast(
+                `Collection for user ${username} already exists.`,
+                'top',
+              );
               l.dismiss();
               return;
             }
@@ -175,14 +174,14 @@ export class ListPage implements OnInit {
             this.addUser(username);
             const collectionWithUser: BggResponse = {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              items: res.items.map((item: any) => ({ ...item, user: username })),
+              items: res.items.map((item: any) => ({
+                ...item,
+                user: username,
+              })),
               total: res.total,
             };
             this.userGameList = collectionWithUser;
-            this.totalGameList.items = [
-              ...this.totalGameList.items,
-              ...collectionWithUser.items,
-            ];
+            this.totalGameList.items = [...this.totalGameList.items, ...collectionWithUser.items];
             // Persist the updated game list
             this.bggStorage.set('gameList', {
               items: this.totalGameList,
@@ -202,20 +201,15 @@ export class ListPage implements OnInit {
         },
         complete: () => {
           l.dismiss();
-        }
+        },
       });
-    })
-
+    });
   }
 
   // Save the user's game collection to local storage
   private setUserToLocalStorage(username: string) {
-    const color = this.usernameColors.find(
-      (userColor) => userColor.username === username,
-    )?.color;
-    const itemsFromUser = this.totalGameList.items.filter(
-      (item) => item.user === username,
-    );
+    const color = this.usernameColors.find((userColor) => userColor.username === username)?.color;
+    const itemsFromUser = this.totalGameList.items.filter((item) => item.user === username);
     if (color) {
       localStorage.setItem(
         `Username-${color}-${username}`,
@@ -239,7 +233,6 @@ export class ListPage implements OnInit {
 
   // Update the URL with the current usernames as query parameters
 
-
   // Remove a user from the list and update the game collection accordingly
   public async removeUser(username: string) {
     this.usernames = this.usernames.filter((user) => user !== username);
@@ -255,29 +248,21 @@ export class ListPage implements OnInit {
     });
 
     // Remove user's game data from local storage
-    localStorage.removeItem(
-      `Username-${this.getColorForUsername(username)}-${username}`,
-    );
-    this.usernameColors = this.usernameColors.filter(
-      (user) => user.username !== username,
-    );
+    localStorage.removeItem(`Username-${this.getColorForUsername(username)}-${username}`);
+    this.usernameColors = this.usernameColors.filter((user) => user.username !== username);
     this.usernameColorService.removeUsername(username);
-    console.log(this.usernameColors)
+    console.log(this.usernameColors);
   }
 
   // Retrieve color associated with a specific username
   public getColorForUsername(username: string): string {
-    return this.usernameColorService.getColorForUsername(
-      username,
-      this.usernameColors,
-    );
+    return this.usernameColorService.getColorForUsername(username, this.usernameColors);
   }
 
   // Assign a color to a username, using an available color from the predefined list
   private setColorForUsername(username: string) {
-    this.usernameColors =
-      this.usernameColorService.setColorForUsername(username);
-    console.log(this.usernameColors)
+    this.usernameColors = this.usernameColorService.setColorForUsername(username);
+    console.log(this.usernameColors);
   }
 
   // Get the status of usernames and their colors from local storage
@@ -310,7 +295,7 @@ export class ListPage implements OnInit {
   async shareList() {
     await Share.share({
       url: `https://deviasa.github.io/bgg-app/?username=${this.usernames.join(',')}`,
-    })
+    });
   }
 
   async showLoginMask(username: string) {
@@ -323,18 +308,20 @@ export class ListPage implements OnInit {
 
     loginModal.present();
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     await loginModal.onWillDismiss().then((res: any) => {
       this.loadingService.showLoading().then(() => {});
       this.ls.login(res.data.username, res.data.password).subscribe({
-      next: () => {
-        this.loadingService.hideLoading();
-        console.log()
-        this.loadGameList(res.data.username, true);
-      },
-      error: err => {
-      console.error(err);
-      this.loadingService.hideLoading();
-        this.loadGameList(res.data.username, false);}
+        next: () => {
+          this.loadingService.hideLoading();
+          console.log();
+          this.loadGameList(res.data.username, true);
+        },
+        error: (err) => {
+          console.error(err);
+          this.loadingService.hideLoading();
+          this.loadGameList(res.data.username, false);
+        },
       });
     });
   }
@@ -342,8 +329,7 @@ export class ListPage implements OnInit {
   async askForLogin(username: string) {
     const askAlert = await this.alertController.create({
       header: 'Login?',
-      message:
-        'Do you want to login to your BGG-Account to get the private Informations?',
+      message: 'Do you want to login to your BGG account to get the private information?',
       buttons: [
         {
           text: 'No',
@@ -366,18 +352,38 @@ export class ListPage implements OnInit {
   }
 
   selectGame(game: BggGame) {
-    this.showGameDetail(game).then(() => {})
+    this.showGameDetail(game).then(() => {});
   }
 
   async showGameDetail(game: BggGame) {
-    const gameModal = await this.modalController.create(
-      {
-        component: GameDetailComponent,
-        componentProps: {
-          game: game,
-        }
-      })
+    const gameModal = await this.modalController.create({
+      component: GameDetailComponent,
+      componentProps: {
+        game: game,
+      },
+    });
 
     await gameModal.present();
+  }
+
+  scrollContent(scroll) {
+    if (scroll === 'top') {
+      this.ionContent.scrollToTop(300);
+    } else {
+      this.ionContent.scrollToBottom(300);
+    }
+  }
+  public lastScrollTop = 0;
+  private readonly SCROLL_THRESHOLD = 100;
+
+  onScroll(event): void {
+    const scrollButton = document.getElementById('scrollBtn');
+    if (event.detail.scrollTop > this.SCROLL_THRESHOLD) {
+      scrollButton.style.display = 'block';
+    } else {
+      scrollButton.style.display = 'none';
+    }
+
+    this.lastScrollTop = event.detail.scrollTop;
   }
 }
