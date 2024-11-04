@@ -1,13 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Share } from '@capacitor/share';
-import { AlertController, IonContent, ModalController } from '@ionic/angular';
+import { AlertController, IonContent, ModalController, PopoverController } from '@ionic/angular';
 import { GameDetailComponent } from '@models/app/components/game-detail/game-detail.component';
 import { LoadingService } from '@models/app/services/loading.service';
 import { BggGame } from '@models/app/services/models/bgg-game.model';
 import { ToastService } from '@models/app/services/toast.service';
 import { filter } from 'rxjs/operators';
 import { LoginComponent } from './components/login/login.component';
+import { FilterPopoverComponent } from './components/pop-over/filter-popover.component';
 import { AlertService } from './services/alert.service';
 import { BggApiService } from './services/bgg-api.service';
 import { LoginService } from './services/login.service';
@@ -28,6 +29,14 @@ export class ListPage implements OnInit {
   usernames: string[] = [];
   userGameList: BggResponse | undefined;
   totalGameList: BggResponse = { items: [], total: 0 };
+  playerCount: number;
+  playTime: number;
+
+  // State variables for filtering and sorting the game list
+  public showFilterDropdown = false;
+  public selectedPlayerCount: number;
+  public selectedPlayTime: number;
+  public filteredGames: BggGame[] = [];
 
   // To store user-specific colors
   usernameColors: { username: string; color: string }[] = [];
@@ -47,6 +56,7 @@ export class ListPage implements OnInit {
     private router: Router,
     private ls: LoginService,
     private alertController: AlertController,
+    private popoverController: PopoverController,
     private modalController: ModalController,
     private loadingService: LoadingService,
     private toastService: ToastService,
@@ -61,6 +71,31 @@ export class ListPage implements OnInit {
       });
 
     this.initializeGameList();
+    document.addEventListener('keydown', this.checkKeyCombination.bind(this));
+    document.addEventListener('touchstart', this.checkTouchGesture.bind(this));
+  }
+
+  checkKeyCombination(event: KeyboardEvent) {
+    if (event.ctrlKey && event.altKey && event.key === 'l') {
+      this.toggleLoginButton();
+    }
+  }
+
+  checkTouchGesture(event: TouchEvent) {
+    if (event.touches.length === 3) {
+      this.toggleLoginButton();
+    }
+  }
+
+  toggleLoginButton() {
+    const hiddenLoginButton = document.getElementById('hiddenLoginButton');
+    if (hiddenLoginButton) {
+      if (hiddenLoginButton.style.display === 'none' || hiddenLoginButton.style.display === '') {
+        hiddenLoginButton.style.display = 'block';
+      } else {
+        hiddenLoginButton.style.display = 'none';
+      }
+    }
   }
 
   // Load the initial game list and usernames from local storage
@@ -73,6 +108,7 @@ export class ListPage implements OnInit {
     if (this.usernames.length > 0) {
       this.mergeAndReloadUsernames();
     }
+    this.resetFilters();
   }
 
   // Handle URL changes to extract usernames from query parameters
@@ -287,8 +323,32 @@ export class ListPage implements OnInit {
     this.usernameColors = localStorageStatus;
   }
 
+  async openFilterPopover(ev: Event) {
+    const popover = await this.popoverController.create({
+      component: FilterPopoverComponent,
+      event: ev,
+      translucent: true,
+      backdropDismiss: true,
+      componentProps: {
+        playerCount: this.playerCount,
+        playTime: this.playTime,
+      },
+    });
+
+    await popover.present();
+
+    const { data } = await popover.onWillDismiss();
+    if (data) {
+      this.playerCount = data.playerCount;
+      this.playTime = data.playTime;
+      this.filterGames();
+    }
+  }
+
   // Open the game selection modal to display the total game list
   public async openGameSelectionModal(totalGameList: BggResponse) {
+    console.log('Player Count:', this.playerCount);
+    console.log('Play Time:', this.playTime);
     await this.modalService.openGameSelectionModal(totalGameList, this);
   }
 
@@ -296,6 +356,26 @@ export class ListPage implements OnInit {
     await Share.share({
       url: `https://deviasa.github.io/bgg-app/?username=${this.usernames.join(',')}`,
     });
+  }
+
+  toggleFilterDropdown() {
+    this.showFilterDropdown = !this.showFilterDropdown;
+  }
+
+  filterGames() {
+    this.filteredGames = this.totalGameList.items.filter((game) => {
+      return (
+        (this.playerCount
+          ? game.minplayers <= this.playerCount && this.playerCount <= game.maxplayers
+          : true) && (this.playTime ? game.maxplaytime >= this.playTime : true)
+      );
+    });
+  }
+
+  resetFilters() {
+    this.playerCount = 0;
+    this.playTime = 0;
+    this.filterGames();
   }
 
   async showLoginMask(username: string) {
@@ -314,7 +394,6 @@ export class ListPage implements OnInit {
       this.ls.login(res.data.username, res.data.password).subscribe({
         next: () => {
           this.loadingService.hideLoading();
-          console.log();
           this.loadGameList(res.data.username, true);
         },
         error: (err) => {
@@ -326,7 +405,7 @@ export class ListPage implements OnInit {
     });
   }
 
-  async askForLogin(username: string) {
+  async askForLogin() {
     const askAlert = await this.alertController.create({
       header: 'Login?',
       message: 'Do you want to login to your BGG account to get the private information?',
@@ -334,15 +413,17 @@ export class ListPage implements OnInit {
         {
           text: 'No',
           role: 'cancel',
+          cssClass: 'alert-button-cancel',
           handler: () => {
-            this.loadGameList(username, false);
+            askAlert.dismiss();
           },
         },
         {
           text: 'Yes',
           role: 'confirm',
+          cssClass: 'alert-button-confirm',
           handler: () => {
-            this.showLoginMask(username);
+            this.showLoginMask(this.username);
           },
         },
       ],

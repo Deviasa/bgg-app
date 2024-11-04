@@ -1,0 +1,46 @@
+<ion-content>
+  <ion-list>
+    <ion-item>
+      <ion-input
+        class="highlight-box"
+        style="--highlight-color: var(--ion-color-highlight); --padding-start: 3px"
+        label="Player Count"
+        labelPlacement="stacked"
+        [(ngModel)]="playerCount"
+        type="number"
+      ></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input
+        class="highlight-box"
+        style="--highlight-color: var(--ion-color-highlight); --padding-start: 3px"
+        label="Play Time in Minutes"
+        labelPlacement="stacked"
+        [(ngModel)]="playTime"
+        type="number"
+      ></ion-input>
+    </ion-item>
+    <ion-button
+      (click)="applyFilters()"
+      class="highlight-box"
+      style="
+        --background: var(--ion-color-button1);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      "
+      >Apply</ion-button
+    >
+  </ion-list>
+  <ion-button
+    (click)="resetFilters()"
+    class="highlight-box"
+    style="
+      --background: var(--ion-color-button2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    "
+    >Reset</ion-button
+  >
+</ion-content>

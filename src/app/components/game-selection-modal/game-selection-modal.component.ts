@@ -12,7 +12,7 @@ import { BggResponse } from 'src/app/services/models/bgg-response.model';
 export class GameSelectionModalComponent {
   @Input()
   totalGameList: BggResponse = { items: [], total: 0 };
-  numberOfPlayers: number = 0;
+  numberOfPlayers: number = 1;
   playTime: number = 60;
   rating: number = 5;
   selectedGame: BggGame | undefined;

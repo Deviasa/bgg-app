@@ -45,3 +45,20 @@ ion-alert.alert-button.button-alert-warning {
 ion-header {
   background-color: var(--ion-toolbar-background, var(--ion-background-color, #fff));
 }
+
+.highlight-box:focus,
+.highlight-box:focus-within {
+  border: 2px solid var(--ion-color-highlight);
+  padding: 0.1em;
+  border-radius: 0.25em;
+  outline: none;
+}
+
+.button-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--highlight-color);
+  border-radius: 50%;
+  padding: 0.5em;
+}

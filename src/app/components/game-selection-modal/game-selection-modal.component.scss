@@ -4,3 +4,20 @@
   align-items: center;
   height: 100%;
 }
+
+::ng-deep .button-solid {
+  --background: var(--ion-color-button1);
+  --color: var(--ion-color-button1-contrast);
+}
+
+.ion-valid.sc-ion-input-md-h {
+  --highlight-color: var(--ion-color-highlight);
+}
+
+.highlight-box:focus,
+.highlight-box:focus-within {
+  border: 2px solid var(--ion-color-highlight);
+  padding: 0.1em;
+  border-radius: 0.25em;
+  outline: none;
+}

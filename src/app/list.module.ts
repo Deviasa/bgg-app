@@ -13,6 +13,7 @@ import { GameDetailComponent } from '@models/app/components/game-detail/game-det
 import { SortPipe } from 'src/pipes/sort.pipe';
 import { GameSelectionModalComponent } from './components/game-selection-modal/game-selection-modal.component';
 import { LoginComponent } from './components/login/login.component';
+import { FilterPopoverModule } from './components/pop-over/filter-popover.module';
 import { ListPageRoutingModule } from './list-routing.module';
 import { ListPage } from './list.page';
 
@@ -33,6 +34,7 @@ import { ListPage } from './list.page';
     BrowserModule,
     ListPageRoutingModule,
     HttpClientModule,
+    FilterPopoverModule,
     IonicStorageModule.forRoot({
       driverOrder: [Drivers.LocalStorage],
     }),

@@ -4,7 +4,16 @@ ion-col {
   align-items: center;
 }
 
-.buttonRound {
+::ng-deep .alert-button.sc-ion-alert-md {
+  color: var(--ion-color-highlight-contrast);
+  background-color: var(--ion-color-highlight);
+}
+
+::ng-deep .sc-ion-loading-md-h {
+  --spinner-color: var(--ion-color-highlight);
+}
+
+ion-button.buttonRound {
   --background: var(--ion-color-button1);
   --color: var(--ion-color-button1-contrast);
 }
