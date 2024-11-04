@@ -20,7 +20,7 @@
       placeholder="Enter username"
       aria-label="Enter username"
       title="Enter username"
-      (enter)="loadGameList(username, false)"
+      (ionChange)="loadGameList(username, false)"
     ></ion-searchbar>
 
     <ion-buttons slot="end">
@@ -57,9 +57,6 @@
         "
       >
         <ion-icon slot="icon-only" name="filter-outline" aria-hidden="true"></ion-icon>
-      </ion-button>
-      <ion-button (click)="resetFilters()">
-        <ion-icon name="refresh"></ion-icon>
       </ion-button>
       <ion-button
         id="hiddenLoginButton"
@@ -104,6 +101,11 @@
           {{ user.username }} x
         </ion-button>
       </ng-container>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button aria-label="Remove filter" title="Remove filter" (click)="resetFilters()">
+        <ion-icon name="refresh"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 
