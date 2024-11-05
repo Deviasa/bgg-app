@@ -10,7 +10,6 @@ export class LoadingService {
   loading;
 
   async showLoading() {
-    console.log('showLoading');
     this.loading = await this.loadingCtrl.create({
       message: 'Loading',
     });
@@ -18,7 +17,6 @@ export class LoadingService {
   }
 
   hideLoading() {
-    console.log('hideLoading');
     this.loading.dismiss();
   }
 }

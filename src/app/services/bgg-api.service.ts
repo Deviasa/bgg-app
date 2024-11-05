@@ -58,10 +58,7 @@ export class BggApiService {
             if (err) {
               throw new Error('Error parsing XML');
             } else {
-              console.log(jsonResult);
-              console.log(result);
               result.item = jsonResult.items.item;
-              //result = jsonResult.items;
               return result;
             }
           });

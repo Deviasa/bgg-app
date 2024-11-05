@@ -102,9 +102,7 @@ export interface StatusClass {
   };
 }
 
-/**
- * Parsed game from bgg xml data
- */
+/** Parsed game from bgg xml data */
 export class BggGame {
   public user?: string;
   public collectionId: number;

@@ -2,11 +2,12 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Share } from '@capacitor/share';
 import { AlertController, IonContent, ModalController, PopoverController } from '@ionic/angular';
+import { filter } from 'rxjs/operators';
+
 import { GameDetailComponent } from '@models/app/components/game-detail/game-detail.component';
 import { LoadingService } from '@models/app/services/loading.service';
 import { BggGame } from '@models/app/services/models/bgg-game.model';
 import { ToastService } from '@models/app/services/toast.service';
-import { filter } from 'rxjs/operators';
 import { LoginComponent } from './components/login/login.component';
 import { FilterPopoverComponent } from './components/pop-over/filter-popover.component';
 import { AlertService } from './services/alert.service';
@@ -17,6 +18,35 @@ import { BggResponse } from './services/models/bgg-response.model';
 import { BggStorageService } from './services/storage.service';
 import { UsernameColorService } from './services/username-color.service';
 
+/**
+ * @class {@link ListPage} class Manages the display and interaction with a list of games retrieved
+ *   from the BoardGameGeek (BGG) API. The user can add multiple usernames to the list and filter
+ *   the games based on player count and play time. The component also provides functionality to
+ *   view game details, share the list, and remove users. The component uses a popover for filtering
+ *   and a modal for game selection.
+ *
+ *   Private Methods
+ *
+ *   - Event Listeners: Methods to add event listeners for key combinations and touch gestures
+ *       ({@link _addEventListeners} {@link _checkKeyCombination} {@link _checkTouchGesture})
+ *   - Game List Initialization: Methods to initialize and handle the game list
+ *       ({@link _initializeGameList}, {@link _handleNavigationEnd}, {@link _mergeAndReloadUsernames},
+ *       {@link _getUsernamesFromLocalStorage}, {@link _loadStoredUsers},
+ *       {@link _setUserToLocalStorage}).
+ *   - User Management: Methods to manage users and their game lists ({@link _addUser},
+ *       {@link _setColorForUsername}, {@link _getLocalStorageStatus},
+ *       {@link loadUsernamesFromLocalStorage}).
+ *
+ *   Public Methods
+ *
+ *   - Sorting and Filtering: Methods to sort and filter the game list ({@link sort}, {@link filterGames},
+ *       {@link resetFilters}).
+ *   - UI Interactions: Methods to handle various UI interactions and modals ({@link openFilterPopover},
+ *       {@link openGameSelectionModal}, {@link shareList}, {@link toggleFilterDropdown},
+ *       {@link showLoginMask}, {@link askForLogin}, {@link selectGame}, {@link showGameDetail},
+ *       {@link scrollContent}).
+ *   - Scroll Handling: Method to handle scroll events ({@link onScroll}).
+ */
 @Component({
   selector: 'app-root',
   templateUrl: './list.page.html',
@@ -24,6 +54,7 @@ import { UsernameColorService } from './services/username-color.service';
 })
 export class ListPage implements OnInit {
   @ViewChild(IonContent) ionContent: IonContent;
+
   // State variables for managing user data and game lists
   username: string = '';
   usernames: string[] = [];
@@ -36,7 +67,6 @@ export class ListPage implements OnInit {
   public showFilterDropdown = false;
   public selectedPlayerCount: number;
   public selectedPlayTime: number;
-  public filteredGames: BggGame[] = [];
 
   // To store user-specific colors
   usernameColors: { username: string; color: string }[] = [];
@@ -62,83 +92,80 @@ export class ListPage implements OnInit {
     private toastService: ToastService,
   ) {}
 
-  // Lifecycle hook to initialize the component
   ngOnInit() {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
-        this.handleNavigationEnd(event.urlAfterRedirects);
+        this._handleNavigationEnd(event.urlAfterRedirects);
       });
 
-    this.initializeGameList();
-    document.addEventListener('keydown', this.checkKeyCombination.bind(this));
-    document.addEventListener('touchstart', this.checkTouchGesture.bind(this));
+    this._initializeGameList();
+    this._addEventListeners();
   }
 
-  checkKeyCombination(event: KeyboardEvent) {
+  private _addEventListeners() {
+    document.addEventListener('keydown', this._checkKeyCombination.bind(this));
+    document.addEventListener('touchstart', this._checkTouchGesture.bind(this));
+  }
+
+  private _checkKeyCombination(event: KeyboardEvent) {
     if (event.ctrlKey && event.altKey && event.key === 'l') {
-      this.toggleLoginButton();
+      this._toggleLoginButton();
     }
   }
 
-  checkTouchGesture(event: TouchEvent) {
+  private _checkTouchGesture(event: TouchEvent) {
     if (event.touches.length === 3) {
-      this.toggleLoginButton();
+      this._toggleLoginButton();
     }
   }
 
-  toggleLoginButton() {
+  private _toggleLoginButton() {
     const hiddenLoginButton = document.getElementById('hiddenLoginButton');
     if (hiddenLoginButton) {
-      if (hiddenLoginButton.style.display === 'none' || hiddenLoginButton.style.display === '') {
-        hiddenLoginButton.style.display = 'block';
-      } else {
-        hiddenLoginButton.style.display = 'none';
-      }
+      hiddenLoginButton.style.display =
+        hiddenLoginButton.style.display === 'none' || hiddenLoginButton.style.display === ''
+          ? 'block'
+          : 'none';
     }
   }
 
-  // Load the initial game list and usernames from local storage
-  private async initializeGameList() {
+  private async _initializeGameList() {
     await this.bggStorage.init();
     const gameList = await this.bggStorage.get('gameList');
     if (!gameList) return;
 
     this.loadUsernamesFromLocalStorage();
     if (this.usernames.length > 0) {
-      this.mergeAndReloadUsernames();
+      this._mergeAndReloadUsernames();
     }
     this.resetFilters();
   }
 
-  // Handle URL changes to extract usernames from query parameters
-  private handleNavigationEnd(url: string) {
+  private _handleNavigationEnd(url: string) {
     const queryParams = new URLSearchParams(url.split('?')[1]);
     const usernamesPart = queryParams.get('username');
     if (usernamesPart) {
       this.usernames = usernamesPart.split(',');
-      console.log(this.usernames);
-      this.mergeAndReloadUsernames();
+      this._mergeAndReloadUsernames();
     }
   }
 
-  // Merge usernames from URL and local storage, reload data
-  private async mergeAndReloadUsernames() {
+  private async _mergeAndReloadUsernames() {
     const urlUsernames = this.usernames;
-    const localStorageUsernames = this.getUsernamesFromLocalStorage();
+    const localStorageUsernames = this._getUsernamesFromLocalStorage();
 
     for (const u of urlUsernames) {
       if (localStorageUsernames.includes(u)) {
-        this.loadStoredUsers(u);
+        this._loadStoredUsers(u);
       } else {
         await this.loadGameList(u, false);
-        this.setUserToLocalStorage(u);
+        this._setUserToLocalStorage(u);
       }
     }
   }
 
-  // Extract stored usernames from localStorage
-  private getUsernamesFromLocalStorage(): string[] {
+  private _getUsernamesFromLocalStorage(): string[] {
     const storedUsers: string[] = [];
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
@@ -150,19 +177,16 @@ export class ListPage implements OnInit {
     return storedUsers;
   }
 
-  // Load user data stored in local storage and merge into the total game list
-  private loadStoredUsers(username: string) {
+  private _loadStoredUsers(username: string) {
     const key = Object.keys(localStorage).find((key) => key.endsWith(username));
     if (key) {
       const collectionWithUser = JSON.parse(localStorage.getItem(key) as string);
       const existingGameIds = new Set(this.totalGameList.items.map((item) => item.collectionId));
 
-      // Filter out games already in the total list
       const newItems = collectionWithUser.items.filter(
         (item: { collectionId: number }) => !existingGameIds.has(item.collectionId),
       );
 
-      // Update the total game list with new items
       this.totalGameList.items = [...this.totalGameList.items, ...newItems];
       this.bggStorage.set('gameList', {
         items: this.totalGameList,
@@ -171,62 +195,19 @@ export class ListPage implements OnInit {
     }
   }
 
-  // Sort the game list based on a selected column
   public sort(column: string) {
     this.descending = !this.descending;
     this.order = this.descending ? 1 : -1;
     this.column = column;
   }
 
-  // Fetch the game list for a specific user from the BGG API
   public async loadGameList(username: string, p: boolean) {
     await this.loadingService.showLoading().then((l) => {
       l.present();
       this.bggApi.getUserCollection(username, p).subscribe({
         next: (res) => {
-          console.log('Loaded: ' + username);
           if (res && res.total !== undefined) {
-            this.errorMessage = null;
-            if (res.total === 0) {
-              this.toastService.presentToast('No games found for user.', 'top');
-              l.dismiss();
-              return;
-            }
-            // Check for color limits and duplicates
-            if (this.getLocalStorageStatus().length >= this.usernameColorService.colors.length) {
-              this.toastService.presentToast('Maximum number of collections reached.', 'top');
-              l.dismiss();
-              return;
-            }
-            if (this.getLocalStorageStatus().find((user) => user.username === username)) {
-              this.toastService.presentToast(
-                `Collection for user ${username} already exists.`,
-                'top',
-              );
-              l.dismiss();
-              return;
-            }
-            // Add new user collection to the game list
-            this.addUser(username);
-            const collectionWithUser: BggResponse = {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              items: res.items.map((item: any) => ({
-                ...item,
-                user: username,
-              })),
-              total: res.total,
-            };
-            this.userGameList = collectionWithUser;
-            this.totalGameList.items = [...this.totalGameList.items, ...collectionWithUser.items];
-            // Persist the updated game list
-            this.bggStorage.set('gameList', {
-              items: this.totalGameList,
-              total: this.totalGameList.items.length,
-            });
-            // Save user data to local storage
-            this.setUserToLocalStorage(username);
-            // Clear username for the next input
-            this.username = '';
+            this._handleGameListResponse(res, username, l);
           } else {
             this.errorMessage = res ? res.toString() : 'Error loading game list.';
           }
@@ -242,8 +223,44 @@ export class ListPage implements OnInit {
     });
   }
 
-  // Save the user's game collection to local storage
-  private setUserToLocalStorage(username: string) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private _handleGameListResponse(res: BggResponse, username: string, l: any) {
+    this.errorMessage = null;
+    if (res.total === 0) {
+      this.toastService.presentToast('No games found for user.', 'top');
+      l.dismiss();
+      return;
+    }
+    if (this._getLocalStorageStatus().length >= this.usernameColorService.colors.length) {
+      this.toastService.presentToast('Maximum number of collections reached.', 'top');
+      l.dismiss();
+      return;
+    }
+    if (this._getLocalStorageStatus().find((user) => user.username === username)) {
+      this.toastService.presentToast(`Collection for user ${username} already exists.`, 'top');
+      l.dismiss();
+      return;
+    }
+    this._addUser(username);
+    const collectionWithUser: BggResponse = {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      items: res.items.map((item: any) => ({
+        ...item,
+        user: username,
+      })),
+      total: res.total,
+    };
+    this.userGameList = collectionWithUser;
+    this.totalGameList.items = [...this.totalGameList.items, ...collectionWithUser.items];
+    this.bggStorage.set('gameList', {
+      items: this.totalGameList,
+      total: this.totalGameList.items.length,
+    });
+    this._setUserToLocalStorage(username);
+    this.username = '';
+  }
+
+  private _setUserToLocalStorage(username: string) {
     const color = this.usernameColors.find((userColor) => userColor.username === username)?.color;
     const itemsFromUser = this.totalGameList.items.filter((item) => item.user === username);
     if (color) {
@@ -254,55 +271,36 @@ export class ListPage implements OnInit {
     }
   }
 
-  // Display a warning message via an alert modal
-  private async showAlert(message: string) {
-    await this.alertService.showAlert(message);
-  }
-
-  // Add a new user to the username list and update the URL
-  private addUser(username: string) {
+  private _addUser(username: string) {
     if (!this.usernames.includes(username)) {
       this.usernames.push(username);
-      this.setColorForUsername(username);
+      this._setColorForUsername(username);
     }
   }
 
-  // Update the URL with the current usernames as query parameters
-
-  // Remove a user from the list and update the game collection accordingly
   public async removeUser(username: string) {
     this.usernames = this.usernames.filter((user) => user !== username);
-    this.totalGameList.items = this.totalGameList.items.filter((item) => {
-      const shouldKeep = item.user !== username;
-      return shouldKeep;
-    });
+    this.totalGameList.items = this.totalGameList.items.filter((item) => item.user !== username);
 
-    // Persist updated game list to storage
     this.bggStorage.set('gameList', {
-      items: this.totalGameList,
+      items: this.totalGameList.items,
       total: this.totalGameList.items.length,
     });
 
-    // Remove user's game data from local storage
     localStorage.removeItem(`Username-${this.getColorForUsername(username)}-${username}`);
     this.usernameColors = this.usernameColors.filter((user) => user.username !== username);
     this.usernameColorService.removeUsername(username);
-    console.log(this.usernameColors);
   }
 
-  // Retrieve color associated with a specific username
   public getColorForUsername(username: string): string {
     return this.usernameColorService.getColorForUsername(username, this.usernameColors);
   }
 
-  // Assign a color to a username, using an available color from the predefined list
-  private setColorForUsername(username: string) {
+  private _setColorForUsername(username: string) {
     this.usernameColors = this.usernameColorService.setColorForUsername(username);
-    console.log(this.usernameColors);
   }
 
-  // Get the status of usernames and their colors from local storage
-  private getLocalStorageStatus() {
+  private _getLocalStorageStatus() {
     const localStorageStatus: { username: string; color: string }[] = [];
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
@@ -316,9 +314,8 @@ export class ListPage implements OnInit {
     return localStorageStatus;
   }
 
-  // Load stored usernames and their colors from local storage
   private loadUsernamesFromLocalStorage() {
-    const localStorageStatus = this.getLocalStorageStatus();
+    const localStorageStatus = this._getLocalStorageStatus();
     this.usernames = localStorageStatus.map((user) => user.username);
     this.usernameColors = localStorageStatus;
   }
@@ -345,10 +342,7 @@ export class ListPage implements OnInit {
     }
   }
 
-  // Open the game selection modal to display the total game list
   public async openGameSelectionModal(totalGameList: BggResponse) {
-    console.log('Player Count:', this.playerCount);
-    console.log('Play Time:', this.playTime);
     await this.modalService.openGameSelectionModal(totalGameList, this);
   }
 
@@ -363,7 +357,7 @@ export class ListPage implements OnInit {
   }
 
   filterGames() {
-    this.filteredGames = this.totalGameList.items.filter((game) => {
+    this.totalGameList.items = this.totalGameList.items.filter((game) => {
       return (
         (this.playerCount
           ? game.minplayers <= this.playerCount && this.playerCount <= game.maxplayers
@@ -454,6 +448,7 @@ export class ListPage implements OnInit {
       this.ionContent.scrollToBottom(300);
     }
   }
+
   public lastScrollTop = 0;
   private readonly SCROLL_THRESHOLD = 100;
 

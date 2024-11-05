@@ -102,11 +102,6 @@
         </ion-button>
       </ng-container>
     </ion-buttons>
-    <ion-buttons slot="end">
-      <ion-button aria-label="Remove filter" title="Remove filter" (click)="resetFilters()">
-        <ion-icon name="refresh"></ion-icon>
-      </ion-button>
-    </ion-buttons>
   </ion-toolbar>
 
   <ion-header class="sort-header">
@@ -180,14 +175,20 @@
     <ion-item
       style="--padding-start: 0px; --inner-padding-end: 0px"
       class="align-center"
-      *ngFor="let game of filteredGames | sort: {property: column, order: order}"
+      *ngFor="let game of totalGameList.items | sort: {property: column, order: order}"
       [ngStyle]="{ '--ion-item-background': getColorForUsername(game.user) }"
     >
       <ion-grid>
         <ion-row (click)="selectGame(game)">
           <ion-col class="game-thumbnail">
             <ion-thumbnail>
-              <img alt="{{game.name}} thumbnail" src="{{game.thumbnail}}" />
+              <a
+                [href]="'https://boardgamegeek.com/boardgame/' + game.objectId + '/' + game.name"
+                target="_tab"
+                (click)="$event.stopPropagation()"
+              >
+                <img alt="{{game.name}} thumbnail" src="{{game.thumbnail}}" />
+              </a>
             </ion-thumbnail>
           </ion-col>
           <ion-col class="game-name" size="5">{{game.name}}</ion-col>

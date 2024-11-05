@@ -28,7 +28,6 @@ export class UsernameColorService {
 
   // Assign color to a username
   setColorForUsername(username: string): { username: string; color: string }[] {
-    console.log(this.usernameColors);
     if (!this.usernameColors.some((userColor) => userColor.username === username)) {
       const usedColors = this.usernameColors.map((userColor) => userColor.color);
       const availableColors = this.colors.filter((color) => !usedColors.includes(color));
