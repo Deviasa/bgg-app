@@ -13,9 +13,19 @@ ion-col {
   --spinner-color: var(--ion-color-highlight);
 }
 
-ion-button.buttonRound {
+::ng-deep .sc-ion-buttons-md-s .button-has-icon-only.button-clear {
+  --border-radius: 0%;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  margin-left: 3px;
+  margin-right: 3px;
   --background: var(--ion-color-button1);
   --color: var(--ion-color-button1-contrast);
+  --width: 2.5em;
+  --height: 2.5em;
+  --display: flex;
+  --justify-content: center;
+  --align-items: center;
 }
 
 .game-name {
@@ -24,8 +34,12 @@ ion-button.buttonRound {
 
 .header-list {
   font-weight: bold;
-  margin: auto;
+  position: relative;
   width: 50%;
+}
+
+.header-icon {
+  padding-top: 10px;
 }
 
 ion-popover {

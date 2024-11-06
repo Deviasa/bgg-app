@@ -1,6 +1,8 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title id="random-game-title">Random Game</ion-title>
+    <ion-title id="random-game-title"
+      >Random Game<ion-icon name="shuffle-outline"></ion-icon
+    ></ion-title>
     <ion-buttons slot="end">
       <ion-button class="highlight-box" (click)="closeModal()" aria-label="Close Modal"
         >X</ion-button
@@ -18,7 +20,8 @@
       labelPlacement="stacked"
       [(ngModel)]="numberOfPlayers"
       type="number"
-    ></ion-input>
+    >
+    </ion-input>
   </ion-item>
   <ion-item>
     <ion-input
@@ -48,7 +51,7 @@
     (click)="searchGame(numberOfPlayers, playTime)"
     aria-label="Search for a game"
   >
-    Search
+    Search <ion-icon style="padding-left: 0.5em" name="search-outline"></ion-icon>
   </ion-button>
 
   <div *ngIf="selectedGame" class="center-content" aria-live="polite">
