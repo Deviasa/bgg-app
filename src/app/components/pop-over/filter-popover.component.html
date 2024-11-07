@@ -18,30 +18,63 @@
         labelPlacement="stacked"
         [(ngModel)]="playTime"
         type="number"
+        [step]="15"
+        [min]="15"
       ></ion-input>
     </ion-item>
-    <ion-button
-      (click)="applyFilters()"
-      class="highlight-box"
-      style="
-        --background: var(--ion-color-button1);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      "
-      >Apply <ion-icon style="padding-left: 0.5em" name="checkmark-circle"></ion-icon>
-    </ion-button>
   </ion-list>
   <ion-button
-    (click)="resetFilters()"
+    (click)="applyFilters()"
+    label="Apply Filters"
     class="highlight-box"
+    style="
+      --background: var(--ion-color-button1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    "
+    >Filter <ion-icon style="padding-left: 0.5em" name="filter-outline"></ion-icon>
+  </ion-button>
+  <ion-button
     style="
       --background: var(--ion-color-button2);
       display: flex;
       justify-content: center;
       align-items: center;
     "
+    class="highlight-box"
+    expand="full"
+    (click)="searchGame(playerCount, playTime)"
+    aria-label="Search for a game"
+  >
+    Search Game<ion-icon style="padding-left: 0.5em" name="shuffle-outline"></ion-icon>
+  </ion-button>
+  <div *ngIf="selectedGame" aria-live="polite">
+    <h2>{{ selectedGame.name }}</h2>
+    <img
+      [src]="selectedGame.thumbnail"
+      (click)="listPage.selectGame(selectedGame)"
+      alt="{{ selectedGame.name }}"
+      style="
+        cursor: pointer;
+        max-width: 100%;
+        height: auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      "
+    />
+  </div>
+  <ion-button
+    (click)="listPage.resetFilters()"
+    class="highlight-box"
+    style="
+      --background: var(--ion-color-button3);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    "
     >Reset
-    <ion-icon style="padding-left: 0.5em" name="trash-bin" style="padding-left: 2 px"></ion-icon>
+    <ion-icon style="padding-left: 0.5em" name="trash-bin"></ion-icon>
   </ion-button>
 </ion-content>

@@ -7,7 +7,6 @@
   <ion-toolbar>
     <ion-title class="center-text">Board Game Geek App</ion-title>
   </ion-toolbar>
-
   <ion-toolbar>
     <ion-searchbar
       color="medium"
@@ -22,40 +21,6 @@
       title="Enter username"
       (ionChange)="loadGameList(username, false)"
     ></ion-searchbar>
-
-    <ion-buttons slot="end">
-      <ion-button
-        class="buttonFunction highlight-box"
-        (click)="openGameSelectionModal(totalGameList)"
-        label="Random Game"
-        title="Get Random Game"
-        aria-label="Get Random Game"
-        ><ion-icon slot="icon-only" name="shuffle-outline" aria-hidden="true"></ion-icon
-      ></ion-button>
-
-      <ion-button
-        class="buttonFunction highlight-box"
-        (click)="openFilterPopover($event)"
-        label="Open Filter Options"
-        aria-label="Open Filter Options"
-        title="Open Filter Options"
-      >
-        <ion-icon slot="icon-only" name="filter-outline" aria-hidden="true"></ion-icon>
-      </ion-button>
-      <ion-button
-        id="hiddenLoginButton"
-        class="buttonFunction highlight-box"
-        (click)="askForLogin()"
-        label="Login"
-        title="Login"
-        aria-label="Login"
-        style="display: none"
-      >
-        <ion-icon slot="icon-only" name="log-in-outline" aria-hidden="true"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-  <ion-toolbar>
     <ion-buttons slot="start">
       <ion-button
         class="buttonFunction highlight-box"
@@ -68,7 +33,29 @@
         <ion-icon slot="icon-only" name="share-social-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button
+        class="buttonFunction highlight-box"
+        (click)="openFilterPopover($event)"
+        label="Random Game with Filter"
+        title="Get Random Game with Filter"
+        aria-label="Get Random Game with Filter"
+        ><ion-icon slot="icon-only" name="shuffle-outline" aria-hidden="true"></ion-icon
+      ></ion-button>
 
+      <ion-button
+        id="hiddenLoginButton"
+        class="buttonFunction highlight-box"
+        (click)="askForLogin()"
+        label="Login"
+        title="Login"
+        aria-label="Login"
+        style="display: none"
+      >
+        <ion-icon slot="icon-only" name="log-in-outline" aria-hidden="true"></ion-icon>
+      </ion-button>
+    </ion-buttons> </ion-toolbar
+  ><ion-toolbar>
     <ion-buttons style="display: flex; flex-wrap: wrap; gap: 5px">
       <ng-container *ngFor="let user of usernameColors">
         <ion-button
@@ -84,11 +71,23 @@
         </ion-button>
       </ng-container>
     </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button
+        *ngIf="isFilterSet()"
+        (click)="resetFilters()"
+        class="highlight-box"
+        style="--background: var(--ion-color-button3)"
+        aria-label="Reset Filters"
+        title="Reset Filters"
+      >
+        <ion-icon name="trash-bin"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 
   <ion-header class="sort-header">
     <ion-toolbar style="--min-height: min-content">
-      <ion-grid class="highlight-box">
+      <ion-grid>
         <ion-row style="min-height: auto">
           <ion-col class="header-list" id="game-images">
             <div class="header-icon">
@@ -103,9 +102,8 @@
           </ion-col>
           <ion-col
             tabindex="0"
-            class="highlight-box"
+            class="highlight-box header-list"
             role="button"
-            class="header-list"
             size="5"
             (click)="sort('name')"
             aria-label="Sort by Name"
@@ -174,10 +172,9 @@
                 tabindex="0"
                 class="highlight-box"
                 role="button"
-              ></ion-icon>
-            </div>
-          </ion-col>
-          <ion-col id="location">
+              ></ion-icon></div
+          ></ion-col>
+          <ion-col class="hideColumn" id="location-icon">
             <div class="header-icon">
               <ion-icon
                 (click)="sort('inventorylocation')"
@@ -192,19 +189,20 @@
           </ion-col>
         </ion-row>
       </ion-grid>
-    </ion-toolbar>
-  </ion-header>
-
-  <ion-list style="padding-top: 0px">
+    </ion-toolbar> </ion-header
+  ><ion-list style="padding-top: 0px">
     <ion-item
-      style="--padding-start: 0px; --inner-padding-end: 0px; color: var(--ion-text-color)"
+      style="--padding-start: 0px; --inner-padding-end: 0px; color: black"
       class="align-center"
-      *ngFor="let game of totalGameList.items | sort: {property: column, order: order}"
+      *ngFor="let game of filteredGameList.items| sort: {property: column, order: order}"
       [ngStyle]="{ '--ion-item-background': getColorForUsername(game.user) }"
     >
       <ion-grid>
         <ion-row (click)="selectGame(game)" tabindex="0" role="button" class="highlight-box">
-          <ion-col class="game-thumbnail">
+          <ion-col
+            class="game-thumbnail"
+            style="display: flex; justify-content: center; align-items: center"
+          >
             <ion-thumbnail>
               <a
                 [href]="'https://boardgamegeek.com/boardgame/' + game.objectId + '/' + game.name"
@@ -226,15 +224,15 @@
       </ion-grid>
     </ion-item>
   </ion-list>
-
   <ion-fab slot="fixed" vertical="bottom" horizontal="center">
     <ion-fab-button
       id="scrollBtn"
       (click)="scrollContent('top')"
+      aria-label="Scroll to top"
+      title="Scroll to top"
       size="small"
       style="--background: var(--ion-text-color); --color: var(--ion-color-button3); display: none"
     >
-      <ion-icon style="font-size: 34px" name="arrow-up-outline" title="Go to top"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
-</ion-content>
+      <ion-icon style="font-size: 34px" name="arrow-up-outline"></ion-icon>
+    </ion-fab-button> </ion-fab
+></ion-content>

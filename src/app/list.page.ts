@@ -10,10 +10,9 @@ import { BggGame } from '@models/app/services/models/bgg-game.model';
 import { ToastService } from '@models/app/services/toast.service';
 import { LoginComponent } from './components/login/login.component';
 import { FilterPopoverComponent } from './components/pop-over/filter-popover.component';
-import { AlertService } from './services/alert.service';
 import { BggApiService } from './services/bgg-api.service';
+import { FilterGamesService } from './services/filter-games.service';
 import { LoginService } from './services/login.service';
-import { ModalService } from './services/modal.service';
 import { BggResponse } from './services/models/bgg-response.model';
 import { BggStorageService } from './services/storage.service';
 import { UsernameColorService } from './services/username-color.service';
@@ -42,9 +41,8 @@ import { UsernameColorService } from './services/username-color.service';
  *   - Sorting and Filtering: Methods to sort and filter the game list ({@link sort}, {@link filterGames},
  *       {@link resetFilters}).
  *   - UI Interactions: Methods to handle various UI interactions and modals ({@link openFilterPopover},
- *       {@link openGameSelectionModal}, {@link shareList}, {@link toggleFilterDropdown},
- *       {@link showLoginMask}, {@link askForLogin}, {@link selectGame}, {@link showGameDetail},
- *       {@link scrollContent}).
+ *       {@link shareList}, {@link showLoginMask}, {@link askForLogin}, {@link selectGame},
+ *       {@link showGameDetail}, {@link scrollContent}).
  *   - Scroll Handling: Method to handle scroll events ({@link onScroll}).
  */
 @Component({
@@ -60,6 +58,7 @@ export class ListPage implements OnInit {
   usernames: string[] = [];
   userGameList: BggResponse | undefined;
   totalGameList: BggResponse = { items: [], total: 0 };
+  filteredGameList: BggResponse = this.totalGameList;
   playerCount: number;
   playTime: number;
 
@@ -80,8 +79,6 @@ export class ListPage implements OnInit {
   constructor(
     private bggApi: BggApiService,
     private bggStorage: BggStorageService,
-    private alertService: AlertService,
-    private modalService: ModalService,
     private usernameColorService: UsernameColorService,
     private router: Router,
     private ls: LoginService,
@@ -90,6 +87,7 @@ export class ListPage implements OnInit {
     private modalController: ModalController,
     private loadingService: LoadingService,
     private toastService: ToastService,
+    private filterGamesService: FilterGamesService,
   ) {}
 
   ngOnInit() {
@@ -106,6 +104,16 @@ export class ListPage implements OnInit {
   private _addEventListeners() {
     document.addEventListener('keydown', this._checkKeyCombination.bind(this));
     document.addEventListener('touchstart', this._checkTouchGesture.bind(this));
+    document.addEventListener('keydown', this._handleEnterKey.bind(this));
+  }
+
+  private _handleEnterKey(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      const activeElement = document.activeElement;
+      if (activeElement && activeElement.classList.contains('highlight-box')) {
+        (activeElement as HTMLElement).click();
+      }
+    }
   }
 
   private _checkKeyCombination(event: KeyboardEvent) {
@@ -329,7 +337,11 @@ export class ListPage implements OnInit {
       componentProps: {
         playerCount: this.playerCount,
         playTime: this.playTime,
+        totalGameList: this.totalGameList,
+        filteredGameList: this.filteredGameList,
+        listPage: this,
       },
+      keyboardClose: false,
     });
 
     await popover.present();
@@ -342,34 +354,28 @@ export class ListPage implements OnInit {
     }
   }
 
-  public async openGameSelectionModal(totalGameList: BggResponse) {
-    await this.modalService.openGameSelectionModal(totalGameList, this);
-  }
-
   async shareList() {
     await Share.share({
       url: `https://deviasa.github.io/bgg-app/?username=${this.usernames.join(',')}`,
     });
   }
 
-  toggleFilterDropdown() {
-    this.showFilterDropdown = !this.showFilterDropdown;
+  filterGames() {
+    this.filteredGameList.items = this.filterGamesService.filterGames(
+      this.playTime,
+      this.playerCount,
+      this.totalGameList,
+    );
   }
 
-  filterGames() {
-    this.totalGameList.items = this.totalGameList.items.filter((game) => {
-      return (
-        (this.playerCount
-          ? game.minplayers <= this.playerCount && this.playerCount <= game.maxplayers
-          : true) && (this.playTime ? game.maxplaytime >= this.playTime : true)
-      );
-    });
+  isFilterSet(): boolean {
+    return this.playerCount > 0 || this.playTime > 0;
   }
 
   resetFilters() {
     this.playerCount = 0;
     this.playTime = 0;
-    this.filterGames();
+    this.filteredGameList.items = this.totalGameList.items;
   }
 
   async showLoginMask(username: string) {

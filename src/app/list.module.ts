@@ -11,20 +11,13 @@ import { Drivers } from '@ionic/storage';
 import { IonicStorageModule } from '@ionic/storage-angular';
 import { GameDetailComponent } from '@models/app/components/game-detail/game-detail.component';
 import { SortPipe } from 'src/pipes/sort.pipe';
-import { GameSelectionModalComponent } from './components/game-selection-modal/game-selection-modal.component';
 import { LoginComponent } from './components/login/login.component';
 import { FilterPopoverModule } from './components/pop-over/filter-popover.module';
 import { ListPageRoutingModule } from './list-routing.module';
 import { ListPage } from './list.page';
 
 @NgModule({
-  declarations: [
-    GameSelectionModalComponent,
-    ListPage,
-    SortPipe,
-    LoginComponent,
-    GameDetailComponent,
-  ],
+  declarations: [SortPipe, LoginComponent, GameDetailComponent, ListPage],
   imports: [
     ScrollingModule,
     CommonModule,
