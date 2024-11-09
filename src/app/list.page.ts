@@ -216,11 +216,13 @@ export class ListPage implements OnInit {
         next: (res) => {
           if (res && res.total !== undefined) {
             this._handleGameListResponse(res, username, l);
+            this.username = "";
           } else {
             this.errorMessage = res ? res.toString() : 'Error loading game list.';
           }
         },
         error: (err) => {
+          this.username = "";
           console.error('Error loading game list:', err);
           this.errorMessage = 'Error loading game list.';
         },

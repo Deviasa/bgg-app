@@ -222,7 +222,7 @@
           <ion-col class="hideColumn">{{game.minplaytime}}</ion-col>
           <ion-col>{{game.maxplaytime}}</ion-col>
           <ion-col class="hideColumn">{{game.yearpublished}}</ion-col>
-          <ion-col>{{game.privateInfo?.$?.inventorylocation}}</ion-col>
+          <ion-col *ngIf="filteredGameList.items[1]?.privateInfo !== undefined">{{game.privateInfo?.$?.inventorylocation}}</ion-col>
         </ion-row>
       </ion-grid>
     </ion-item>
