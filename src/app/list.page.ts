@@ -162,6 +162,7 @@ export class ListPage implements OnInit {
 
   private async _mergeAndReloadUsernames() {
     const urlUsernames = this.usernames;
+    this.usernames = [];
     const localStorageUsernames = this._getUsernamesFromLocalStorage();
 
     for (const u of urlUsernames) {
@@ -169,7 +170,7 @@ export class ListPage implements OnInit {
         this._loadStoredUsers(u);
       } else {
         await this.loadGameList(u, false);
-        this._setUserToLocalStorage(u);
+        //this._setUserToLocalStorage(u);
       }
     }
   }
@@ -216,7 +217,6 @@ export class ListPage implements OnInit {
         next: (res) => {
           if (res && res.total !== undefined) {
             this._handleGameListResponse(res, username, l);
-            this.username = "";
           } else {
             this.errorMessage = res ? res.toString() : 'Error loading game list.';
           }
@@ -267,12 +267,15 @@ export class ListPage implements OnInit {
       items: this.totalGameList,
       total: this.totalGameList.items.length,
     });
+
     this._setUserToLocalStorage(username);
     this.username = '';
   }
 
   private _setUserToLocalStorage(username: string) {
+    console.log(username)
     const color = this.usernameColors.find((userColor) => userColor.username === username)?.color;
+    console.log(color)
     const itemsFromUser = this.totalGameList.items.filter((item) => item.user === username);
     if (color) {
       localStorage.setItem(
