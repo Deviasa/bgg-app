@@ -354,6 +354,27 @@ export class ListPage implements OnInit {
     }
   }
 
+  async openLoginPopover(ev: Event) {
+    const loginPopover = await this.popoverController.create({
+      component: LoginComponent,
+      event: ev,
+      translucent: true,
+      backdropDismiss: true,
+      componentProps: {
+        listPage: this,
+      },
+      keyboardClose: false,
+    });
+
+    await loginPopover.present();
+
+    const { data } = await loginPopover.onWillDismiss();
+    if (data) {
+      this.username = data.username;
+      this.loadGameList(this.username, true);
+    }
+  }
+
   async shareList() {
     await Share.share({
       url: `https://deviasa.github.io/bgg-app/?username=${this.usernames.join(',')}`,
