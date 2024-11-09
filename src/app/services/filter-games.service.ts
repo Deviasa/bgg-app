@@ -8,14 +8,13 @@ import { BggResponse } from './models/bgg-response.model';
 export class FilterGamesService {
   filteredGameList: BggResponse | undefined;
 
-  filterGames(playTime: number, playerCount: number, totalGameList: BggResponse): BggGame[] {
-    this.filteredGameList = totalGameList;
-    return (this.filteredGameList.items = this.filteredGameList.items.filter((game) => {
+  filterGames(playTime: number, playerCount: number, filteredGameList: BggResponse): BggGame[] {
+    return filteredGameList.items.filter((game) => {
       const playerCountMatches =
         playerCount > 0 ? game.minplayers <= playerCount && playerCount <= game.maxplayers : true;
       const playTimeMatches =
         playTime > 0 ? game.minplaytime <= playTime && playTime <= game.maxplaytime : true;
       return playerCountMatches && playTimeMatches;
-    }));
+    });
   }
 }

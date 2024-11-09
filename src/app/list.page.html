@@ -40,7 +40,7 @@
         label="Random Game with Filter"
         title="Get Random Game with Filter"
         aria-label="Get Random Game with Filter"
-        ><ion-icon slot="icon-only" name="shuffle-outline" aria-hidden="true"></ion-icon
+        ><ion-icon slot="icon-only" name="shuffle-outline"></ion-icon
       ></ion-button>
 
       <ion-button
@@ -52,7 +52,7 @@
         aria-label="Login"
         style="display: none"
       >
-        <ion-icon slot="icon-only" name="log-in-outline" aria-hidden="true"></ion-icon>
+        <ion-icon slot="icon-only" name="log-in-outline"></ion-icon>
       </ion-button>
     </ion-buttons> </ion-toolbar
   ><ion-toolbar>
@@ -76,7 +76,6 @@
         *ngIf="isFilterSet()"
         (click)="resetFilters()"
         class="highlight-box"
-        style="--background: var(--ion-color-button3)"
         aria-label="Reset Filters"
         title="Reset Filters"
       >
@@ -174,7 +173,11 @@
                 role="button"
               ></ion-icon></div
           ></ion-col>
-          <ion-col class="hideColumn" id="location-icon">
+          <ion-col
+            class="hideColumn"
+            id="location-icon"
+            *ngIf="filteredGameList.items[1].privateInfo !== undefined"
+          >
             <div class="header-icon">
               <ion-icon
                 (click)="sort('inventorylocation')"
