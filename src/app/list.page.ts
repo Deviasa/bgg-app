@@ -260,6 +260,7 @@ export class ListPage implements OnInit {
     };
     this.userGameList = collectionWithUser;
     this.totalGameList.items = [...this.totalGameList.items, ...collectionWithUser.items];
+    this.filteredGameList.items = [...this.totalGameList.items];
     this.bggStorage.set('gameList', {
       items: this.totalGameList,
       total: this.totalGameList.items.length,
@@ -288,7 +289,9 @@ export class ListPage implements OnInit {
 
   public async removeUser(username: string) {
     this.usernames = this.usernames.filter((user) => user !== username);
+    console.log(this.totalGameList.items.filter((item) => item.user !== username))
     this.totalGameList.items = this.totalGameList.items.filter((item) => item.user !== username);
+    this.filteredGameList.items = this.filteredGameList.items.filter((item) => item.user !== username);
 
     this.bggStorage.set('gameList', {
       items: this.totalGameList.items,
