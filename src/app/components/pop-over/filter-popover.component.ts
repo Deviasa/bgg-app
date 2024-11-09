@@ -27,14 +27,26 @@ export class FilterPopoverComponent {
   }
 
   searchGame(playerCount: number, playTime: number) {
-    const suitableGames = this.totalGameList.items.filter(
-      (game) =>
-        playerCount >= game.minplayers &&
-        playerCount <= game.maxplayers &&
-        playTime <= game.maxplaytime &&
-        playTime >= game.minplaytime,
-    );
+    let suitableGames = []
+    if(playerCount > 0 || playTime > 0) {
+       suitableGames = this.totalGameList.items.filter(
+        (game) =>
+          playerCount >= game.minplayers &&
+          playerCount <= game.maxplayers &&
+          playTime <= game.maxplaytime &&
+          playTime >= game.minplaytime,
+      );
+    } else {
+      suitableGames = this.totalGameList.items;
+    }
+
 
     this.selectedGame = suitableGames[Math.floor(Math.random() * suitableGames.length)];
+  }
+
+  resetFilters() {
+    this.playerCount = 0;
+    this.playTime = 0;
+    this.listPage.resetFilters()
   }
 }
