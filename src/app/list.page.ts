@@ -58,7 +58,8 @@ export class ListPage implements OnInit {
   usernames: string[] = [];
   userGameList: BggResponse | undefined;
   totalGameList: BggResponse = { items: [], total: 0 };
-  filteredGameList: BggResponse = this.totalGameList;
+  filteredGameList: BggResponse = { items: [], total: 0 };
+
   playerCount: number;
   playTime: number;
 
@@ -194,7 +195,6 @@ export class ListPage implements OnInit {
       const newItems = collectionWithUser.items.filter(
         (item: { collectionId: number }) => !existingGameIds.has(item.collectionId),
       );
-
       this.totalGameList.items = [...this.totalGameList.items, ...newItems];
       this.bggStorage.set('gameList', {
         items: this.totalGameList,
@@ -338,7 +338,6 @@ export class ListPage implements OnInit {
         playerCount: this.playerCount,
         playTime: this.playTime,
         totalGameList: this.totalGameList,
-        filteredGameList: this.filteredGameList,
         listPage: this,
       },
       keyboardClose: false,
@@ -347,6 +346,7 @@ export class ListPage implements OnInit {
     await popover.present();
 
     const { data } = await popover.onWillDismiss();
+
     if (data) {
       this.playerCount = data.playerCount;
       this.playTime = data.playTime;
@@ -364,7 +364,7 @@ export class ListPage implements OnInit {
     this.filteredGameList.items = this.filterGamesService.filterGames(
       this.playTime,
       this.playerCount,
-      this.totalGameList,
+      this.filteredGameList,
     );
   }
 
@@ -375,7 +375,8 @@ export class ListPage implements OnInit {
   resetFilters() {
     this.playerCount = 0;
     this.playTime = 0;
-    this.filteredGameList.items = this.totalGameList.items;
+
+    this.filteredGameList.items = [...this.totalGameList.items];
   }
 
   async showLoginMask(username: string) {
