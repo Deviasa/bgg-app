@@ -19,9 +19,11 @@ export class LoginComponent implements OnInit {
   }
 
   confirm() {
-    if(this.username && this.username.length > 0 && this.password.length > 0) {
-      return this.modalCtrl.dismiss({ username: this.username, password: this.password }, 'confirm');
+    if (this.username && this.username.length > 0 && this.password.length > 0) {
+      return this.modalCtrl.dismiss(
+        { username: this.username, password: this.password },
+        'confirm',
+      );
     }
-
   }
 }
