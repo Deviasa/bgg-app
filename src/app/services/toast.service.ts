@@ -12,8 +12,19 @@ export class ToastService {
       message: message,
       duration: 20000,
       position: position,
+      buttons: this.toastButtons
     });
 
     await toast.present();
   }
+
+  public toastButtons = [
+    {
+      text: 'Dismiss',
+      role: 'cancel',
+      handler: () => {
+
+      },
+    },
+  ];
 }
