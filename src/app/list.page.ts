@@ -373,8 +373,13 @@ export class ListPage implements OnInit {
 
     const { data } = await loginPopover.onWillDismiss();
     if (data) {
-      this.username = data.username;
-      this.loadGameList(this.username, true);
+      console.log(data)
+      this.ls.login(data.username, data.password).subscribe(() => {
+        this.username = data.username;
+
+        this.loadGameList(this.username, true);
+      })
+
     }
   }
 
