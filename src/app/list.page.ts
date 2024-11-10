@@ -389,8 +389,9 @@ export class ListPage implements OnInit {
   }
 
   async shareList() {
+    const users = this._getUsernamesFromLocalStorage()
     await Share.share({
-      url: `https://deviasa.github.io/bgg-app/?username=${this.usernames.join(',')}`,
+      url: `https://deviasa.github.io/bgg-app/?username=${users.join(',')}`,
     });
   }
 
