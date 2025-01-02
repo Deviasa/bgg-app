@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController, PopoverController } from '@ionic/angular';
+import { PopoverController } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
@@ -14,10 +14,8 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {}
 
-
   confirm() {
     if (this.username.length > 0 && this.password.length > 0) {
-      console.log("login")
       return this.popoverController.dismiss(
         { username: this.username, password: this.password },
         'confirm',

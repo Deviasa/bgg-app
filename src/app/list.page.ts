@@ -100,6 +100,14 @@ export class ListPage implements OnInit {
 
     this._initializeGameList();
     this._addEventListeners();
+    this._updateUrlWithUsernames();
+  }
+
+  private _updateUrlWithUsernames() {
+    const users = this._getUsernamesFromLocalStorage();
+    const currentUrl = window.location.href.split('?')[0];
+    const newUrl = `${currentUrl}?username=${users.join(',')}`;
+    window.history.replaceState({}, '', newUrl);
   }
 
   private _addEventListeners() {
@@ -213,20 +221,34 @@ export class ListPage implements OnInit {
   public async loadGameList(username: string, p: boolean) {
     await this.loadingService.showLoading().then((l) => {
       l.present();
+      const timeout = setTimeout(() => {
+        l.dismiss();
+        this.errorMessage = 'Timeout: Error loading game list.';
+        console.error('Timeout: Error loading game list.');
+        this.toastService.presentToast(
+          'Timeout: Error loading game list. Please check your username and try again.',
+          'top',
+        );
+      }, 5000);
+
       this.bggApi.getUserCollection(username, p).subscribe({
         next: (res) => {
+          clearTimeout(timeout);
           if (res && res.total !== undefined) {
             this._handleGameListResponse(res, username, l);
           } else {
             this.errorMessage = res ? res.toString() : 'Error loading game list.';
           }
+          this._updateUrlWithUsernames();
+          this.username = '';
         },
         error: (err) => {
-          this.username = "";
+          this.username = '';
           console.error('Error loading game list:', err);
           this.errorMessage = 'Error loading game list.';
         },
         complete: () => {
+          clearTimeout(timeout);
           l.dismiss();
         },
       });
@@ -273,9 +295,7 @@ export class ListPage implements OnInit {
   }
 
   private _setUserToLocalStorage(username: string) {
-    console.log(username)
     const color = this.usernameColors.find((userColor) => userColor.username === username)?.color;
-    console.log(color)
     const itemsFromUser = this.totalGameList.items.filter((item) => item.user === username);
     if (color) {
       localStorage.setItem(
@@ -294,9 +314,10 @@ export class ListPage implements OnInit {
 
   public async removeUser(username: string) {
     this.usernames = this.usernames.filter((user) => user !== username);
-    console.log(this.totalGameList.items.filter((item) => item.user !== username))
     this.totalGameList.items = this.totalGameList.items.filter((item) => item.user !== username);
-    this.filteredGameList.items = this.filteredGameList.items.filter((item) => item.user !== username);
+    this.filteredGameList.items = this.filteredGameList.items.filter(
+      (item) => item.user !== username,
+    );
 
     this.bggStorage.set('gameList', {
       items: this.totalGameList.items,
@@ -306,6 +327,7 @@ export class ListPage implements OnInit {
     localStorage.removeItem(`Username-${this.getColorForUsername(username)}-${username}`);
     this.usernameColors = this.usernameColors.filter((user) => user.username !== username);
     this.usernameColorService.removeUsername(username);
+    this._updateUrlWithUsernames();
   }
 
   public getColorForUsername(username: string): string {
@@ -378,20 +400,18 @@ export class ListPage implements OnInit {
 
     const { data } = await loginPopover.onWillDismiss();
     if (data) {
-      console.log(data)
       this.ls.login(data.username, data.password).subscribe(() => {
         this.username = data.username;
 
         this.loadGameList(this.username, true);
-      })
-
+      });
     }
   }
 
   async shareList() {
-    const users = this._getUsernamesFromLocalStorage()
+    const currentUrl = window.location.href;
     await Share.share({
-      url: `https://deviasa.github.io/bgg-app/?username=${users.join(',')}`,
+      url: currentUrl,
     });
   }
 

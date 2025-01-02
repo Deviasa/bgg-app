@@ -12,7 +12,7 @@ export class ToastService {
       message: message,
       duration: 20000,
       position: position,
-      buttons: this.toastButtons
+      buttons: this.toastButtons,
     });
 
     await toast.present();
@@ -22,9 +22,7 @@ export class ToastService {
     {
       text: 'Dismiss',
       role: 'cancel',
-      handler: () => {
-
-      },
+      handler: () => {},
     },
   ];
 }
