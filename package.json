@@ -9,7 +9,7 @@
     "lint": "eslint \"**/*.{ts,tsx}\"",
     "lint:fix": "eslint --fix \"**/*.{ts,tsx}\"",
     "format": "prettier --write \"src/**/*.{ts,html,scss}\"",
-    "deploy": "gh-pages -d ./www"
+    "deploy": "npx angular-cli-ghpages --dir=www"
   },
   "private": true,
   "dependencies": {
