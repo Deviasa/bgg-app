@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1753026075130,
+  "timestamp": 1753026548280,
   "index": "/bgg-app/index.html",
   "assetGroups": [
     {
@@ -72,7 +72,7 @@
         "/bgg-app/9977.3f01231cc2bcb0dd.js",
         "/bgg-app/common.95cc842376e861a5.js",
         "/bgg-app/index.html",
-        "/bgg-app/main.58895d2b3f4f6a8f.js",
+        "/bgg-app/main.09504646b2eba6fc.js",
         "/bgg-app/manifest.webmanifest",
         "/bgg-app/polyfills-core-js.f47eb60cc4ed4bde.js",
         "/bgg-app/polyfills-dom.bf542500b6fca113.js",
@@ -1532,8 +1532,8 @@
     "/bgg-app/assets/icons/logo_96x96px.png": "c516b66197387abcc78cc4b3cc0e6576d0a4c6a4",
     "/bgg-app/assets/shapes.svg": "638f87e27e6fc7ddfd6e6b262ea70d690f6c7011",
     "/bgg-app/common.95cc842376e861a5.js": "feb83b45f3950723017eb85a124f7434159143bc",
-    "/bgg-app/index.html": "d2698668bf4b5e7f7664d5e88922199039990d00",
-    "/bgg-app/main.58895d2b3f4f6a8f.js": "cfe2c4513cff8ff7ddc0362fc3455f3fd2545c64",
+    "/bgg-app/index.html": "8cefd9c40607c1398a7973c828e0cad307ae8433",
+    "/bgg-app/main.09504646b2eba6fc.js": "d4e5a03c485938db19058213924a3edecdd7ae89",
     "/bgg-app/manifest.webmanifest": "0408c159370a665c6b22880662f34de703e9e3f4",
     "/bgg-app/polyfills-core-js.f47eb60cc4ed4bde.js": "320bc5a48e53a1c00b5b0b52a9a6610781c6312f",
     "/bgg-app/polyfills-dom.bf542500b6fca113.js": "3fa333db66c8050f12e99d977f5098a6de8dd593",
